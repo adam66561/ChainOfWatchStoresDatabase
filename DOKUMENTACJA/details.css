@@ -1,0 +1,195 @@
+html {
+    background: #FFFFFF;
+}
+
+body {
+    font-size: small;
+    font-family: sans-serif;
+}
+
+
+#nonscrollingHeader{
+    height:3em;
+    position:absolute;
+    top:0;
+    width:100%;
+    z-index:5 
+}
+    
+#nonscrollingHeader h3 { font-size: 14pt; margin-top:10px }
+
+#scrollingContainer{
+    bottom:0;
+    left:0;
+    position:fixed;
+    right:0;
+    top:3em;
+    z-index:1
+}
+    
+* html #scrollingContainer{
+    height:100%;
+    width:100%;
+    padding-top:3em;
+}
+
+#scrollingContents{
+    overflow:auto;
+    height:100%;
+    position:relative;
+    z-index:10;
+    margin:0;
+    padding:0}
+    
+
+div.comments {
+    padding-top:10px;
+    padding-bottom:10px;
+    background: red;
+}
+
+dl.commentTags dt { font-weight: bold }
+dl.changes dt { font-weight: bold }
+dl.usages dt { font-weight: bold }
+dl.references dt { font-weight: bold }
+dl.modifyingObjectList dt { font-weight: bold }
+dl.modifyingObjectList dd { font-family: monospace }
+
+
+div#nsr {
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: #DBA428 1pt solid;
+    padding-top: 5px; 
+    margin: 0px;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #FFFFFF;
+    width:100%; 
+}
+
+body > div#nsr {
+    position:fixed;
+}
+
+body.single {
+    background: #808080;
+}
+    
+div.island {
+    border: 1px solid black;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    background: white;
+    margin: 15px;
+}
+
+
+div#buffer {
+    padding-top: 10px;
+}
+
+dt {
+    margin-left: 0px;
+    padding-left: 0px;
+    border-left: 0px;
+}
+
+
+pre {
+    background-color: #EEE;
+    border: solid 1px #000;
+    overflow: auto;
+    padding:0.5em;
+    margin:0;
+    font-size:small;
+}
+
+code {
+    font-size:small;
+}
+
+
+h3 {
+    background:#f0f0ff;
+    border: 1px solid #c0c0c0;
+    padding: 0.25em;
+    background-position: 5px center;
+    background-repeat:no-repeat;
+}
+
+h3.table {
+    padding-left: 26px;
+    background-image:url("table16.gif");
+}
+
+h3.view {
+    padding-left: 26px;
+    background-image:url("view16.gif");
+}
+
+h3.procedure {
+    padding-left: 26px;
+    background-image:url("proc16.gif");
+}
+
+h3.trigger {
+    padding-left: 26px;
+    background-image:url("trigger16.png");
+}
+
+h3.event {
+    padding-left: 26px;
+    background-image:url("event16.png");
+}
+
+
+
+
+
+h4 {
+    border: solid 1px #000;
+    margin:1em 0 0 0;
+    padding:3px;
+    border-bottom-width:0;
+}
+
+@media print {
+    #nsr {
+	 visibility: visible;
+    }
+}
+
+
+table.tableColumnList {
+    border: 1px solid silver;
+    margin-top: 20px;
+    width: 100%;
+}
+
+
+table.tableColumnList tr th {
+    background: #e0e0e0;
+    text-align: left;
+    font-weight: bold;
+    padding: 0.25em;
+}
+
+table.tableColumnList tr td {
+    padding: 0.25em;
+}
+
+td.columnName {
+    font-weight: bold;
+}
+
+td.columnType {
+    font-weight: bold;
+}
+
+
+

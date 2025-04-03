@@ -1,0 +1,2280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>zegarki</title>
+<script type="text/javascript">
+	
+var textNode;
+var procDivs;
+
+function findY( obj )
+{
+    var curtop = 0;
+    if( obj.offsetParent ) {
+	curtop = obj.offsetTop;
+	while( obj = obj.offsetParent ) {
+	    curtop += obj.offsetTop;
+	}
+    }
+    return curtop;
+}
+
+function init()
+{
+    if( document.documentElement ) {
+	document.documentElement.onscroll = function () {
+	    updateNSR();
+	}
+    }
+    
+    // get the text element
+    if( document.getElementById ) {
+	// standards-compliant browsers (e.g. firefox) use this
+	textNode = parent.header.document.getElementById( 'nsrTitle' );
+    } else if( document.all ) {
+	// for old IE
+	textNode = parent.header.document.all.nsrTitle;
+    } else if( document.layers ) {
+	// for old versions of Netscape
+	textNode = parent.header.document.layers.nsrTitle;
+    }
+    
+    procDivs = new Array();
+    var idx = 0;
+    for( i in document.anchors ) {
+	if( document.anchors[i].id == "procAnchor" ) {
+	    var curY = findY( document.anchors[i] ) - 25;
+	    anchorName = document.anchors[i].name;
+	} else if( document.anchors[i].id == "suffixAnchor" ) {
+	    var curY = findY( document.anchors[i] ) - 25;
+	    var anchorName = document.anchors[i].name.substring(0, document.anchors[i].name.length - 3);
+	} else {
+	    continue;
+	}
+	    
+	if( document.anchors[i].parentNode ) {
+	    var class_name = document.anchors[i].parentNode.className;
+	} else {
+	    var class_name = "";
+	}
+	    
+	procDivs[idx] = new Array( curY, anchorName, class_name );
+	idx++;
+    }
+    updateNSR();
+}
+
+
+
+function updateNSR()
+{
+    var winY = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop;
+    
+    for( var i = 0; i < procDivs.length; i++ ) {
+	if( i == procDivs.length - 1 ) {
+	    var proc = procDivs[i];
+	    if( winY >= proc[0] ) {
+		var newText = decodeURI(proc[1]);
+		if( newText != textNode.innerHTML ) {
+		    textNode.innerHTML = newText;
+		}
+		if( textNode.className != proc[2] ) {
+		    textNode.className = proc[2];
+		}
+	    }
+	    return;
+	} else {
+	    var proc1 = procDivs[i];
+	    var proc2 = procDivs[i+1];
+	    if( ( winY >= proc1[0] ) && ( winY <= proc2[0] ) ) {
+		var newText = decodeURI(proc1[1]);
+		if( newText != textNode.innerHTML ) {
+		    textNode.innerHTML = newText;
+		}
+		if( textNode.className != proc1[2] ) {
+		    textNode.className = proc1[2];
+		}
+		return;
+	    }
+	}
+    }
+}
+
+</script>
+<link rel="stylesheet" type="text/css" href="details.css">
+</head>
+<body class="single" onscroll="updateNSR()" onmousewheel="updateNSR()" onload="init()">
+<div class="island">
+<h3 class="table">
+<a name="DBA.Dokument_sprzedazy.ta" id="suffixAnchor">DBA.Dokument_sprzedazy</a>
+</h3>
+<div class="comment">Dokument sprzedazy jest to:
+dokument potwierdzajcy zawarcie transakcji z klientem. Moe by to paragon lub faktura.
+W przypadku gdy klient poprosi o paragon, paragon tworzy si od razu, zapata wymagana jest od razu. 
+W przypadku wzicia zakupw na fak</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_wydaj_produkt_klientowi">p_wydaj_produkt_klientowi.DBA</a>&nbsp;
+		<a target="detail" href="detail.html#DBA.p_wydaj_produkt_klientowi">p_wydaj_produkt_klientowi.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Jednoznaczny identyfikator dokumentu wydania zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_dokumentu_sprzedazy</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Numer paragonu automatycznie nadawany przez drukark fiskaln. Prawnie kada drukarka ma wasny system nadawania numerw, ale istnieje ryzyko wystpienia bdw.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_wystawienia_sprzedazy</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data wystawienia paragonu lub faktury, czyli inaczej dzie sprzeday</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_zaplaty_sprzedazy</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data zapaty za zakupiony produkt. W razie wyboru opcji paragonu, kwota musi zosta zapacona podczas transakcji. Gdy klient wybierze opcje zakupu na faktur, zapata moe zosta wykonana pniej</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Typ_dokumentu_sprzedazy</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Typ dokumentu sprzedazy jest to
+informacja czy zakupy zostay wzite na paragon czy faktur
+F- faktura
+P - paragon</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Wartosc_netto_sprzedazy</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td>Cena bez wliczonego podatku od towarw i usug (VAT)</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kwota_vat_sprzedazy</td><td class="columnType" nowrap="1">decimal(3, 0)</td><td class="columnDefault"></td><td>podatek, ktry jest doliczany do ceny sprzeday towarw</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Wartosc_brutto_sprzedazy</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td> cena kocowa, jak konsument paci za towar obejmujca zarwno cen netto, jak i dodany podatek VAT.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Status_platnosci_sprzedazy</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Status patno informuje na jakim etapie znajduje si patno.
+O - opacona
+N - nieopacona
+W - wysana
+P - przeterminowana
+Z - zatwierdzona
+A - anulowana</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Metoda_platnosci_sprzedazy</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Metoda platnosci informuje w jaki sposb zostaa dokonana patno. 
+gotwka - G
+przelew - P
+blik - B
+karta - K</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Dokument_zakupu.ta" id="suffixAnchor">DBA.Dokument_zakupu</a>
+</h3>
+<div class="comment">Dokument zakupu jest to:
+dokument potwierdzajcy wystawienie faktury dla dostawcy za dostarczenie towaru. Faktura moe zosta wystawiona na kilka dokumentw Przyjcia zewntrznego.</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_wprowadz_fakture_za_przyjecia">p_wprowadz_fakture_za_przyjecia.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_dokumentu_zakupu</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Id dokumentu zakupu jest to 
+jednoznaczny identyfikator identyfikujcy faktur wewntrz firmy.
+Identyfikator jest potrzebny, ze wzgldu na to e rni dostawcy mog wystawi faktur o tym samym numerze.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_dokumentu_zakupu</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Numer faktury otrzymanej od dostawcy</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_wystawienia_zakupu</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data w ktrej zostaa wystawiona faktura</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_zaplaty_zakupu</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data w ktrym faktura zostaa opacona</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Typ_dokumentu_zakupu</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Typ dokumentu sprzedazy jest to
+informacja jaka forma dokumentu zostaa wystawiona.
+F - faktura
+P - proforma
+K - korekta
+Z - zaliczka</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Wartosc_netto_zakupu</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td>Cena bez wliczonego podatku od towarw i usug (VAT)</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kwota_vat_zakupu</td><td class="columnType" nowrap="1">decimal(3, 0)</td><td class="columnDefault"></td><td>podatek, ktry jest doliczany do ceny sprzeday towarw</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Wartosc_brutto_zakupu</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td> cena kocowa, jak konsument paci za towar obejmujca zarwno cen netto, jak i dodany podatek VAT.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Status_platnosci_zakupu</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Status patno informuje na jakim etapie znajduje si patno.
+O - opacona
+N - nieopacona
+W - wysana
+P - przeterminowana
+Z - zatwierdzona
+A - anulowana</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Kontrahent.ta" id="suffixAnchor">DBA.Kontrahent</a>
+</h3>
+<div class="comment">Kontrahent jest to:
+osoba z ktr zostaa zawarta transakcja (zakup - dostawca / sprzeda - klient) lub ktra zoya zamwienie (klient).</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Typ_kontrahenta</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Typ klienta informuje czy kontrahent jest klientem czy dostawc.
+K - klient
+D - dostawca</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Nazwa_firmy</td><td class="columnType" nowrap="1">varchar(50)</td><td class="columnDefault"></td><td>Nazwa firmy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Nip_firmy</td><td class="columnType" nowrap="1">varchar(10)</td><td class="columnDefault"></td><td>Nip firmy</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Regon_firmy</td><td class="columnType" nowrap="1">varchar(14)</td><td class="columnDefault"></td><td>Regon firmy</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kraj_firmy</td><td class="columnType" nowrap="1">varchar(30)</td><td class="columnDefault"></td><td>Kraj zarejestrowanai firmy</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Lokalizacja.ta" id="suffixAnchor">DBA.Lokalizacja</a>
+</h3>
+<div class="comment">Lokalizacja jest to:
+fizyczna lokalizacja sklepu lub magazyna jednoznacznie okrelona przez identyfikator Mag. Przechowuje rwnie dane o wacicielu w przypadku najmowanych lokali.</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Mag</td><td class="columnType" nowrap="1">smallint</td><td class="columnDefault"></td><td>Mag jest to 
+identyfikator, ktry jednoznacznie definiuje dan lokalizacj - sklep lub magazyn.
+Magazyn gwny jest to id 1.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_wlasciciela</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie identyfikujcy osob niezalenie od rodzaju</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Miasto</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Miasto danego lokalu</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Poczta</td><td class="columnType" nowrap="1">char(6)</td><td class="columnDefault"></td><td>Poczta danego lokalu</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Ulica</td><td class="columnType" nowrap="1">varchar(30)</td><td class="columnDefault"></td><td>Ulica danego lokalu</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_lokalu</td><td class="columnType" nowrap="1">char(3)</td><td class="columnDefault"></td><td>Numer lokalu danego lokalu</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Rodzaj</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Rodzaj jest to:
+informacja czy lokal jest najmowany czy wasny.
+N - najmowany
+W - wasny</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Model_zegarka.ta" id="suffixAnchor">DBA.Model_zegarka</a>
+</h3>
+<div class="comment">Model zegarka to:
+ewidencja dostpnych zegarkw w caej firmie  Przechowuje wszystkie potrzebne parametry zegarka.
+Przechowuje ilo dostpnych sztuk modelu zegarka.</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Updated from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.t_zgloszenie_wydania_produktu.tr">t_zgloszenie_wydania_produktu.DBA</a>&nbsp;
+		<a target="detail" href="detail.html#DBA.t_przyjecie_dostawy.tr">t_przyjecie_dostawy.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Marka_zegarka</td><td class="columnType" nowrap="1">varchar(100)</td><td class="columnDefault"></td><td>Nazwa producenta zegarka. Wymagane.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Model_zegarka</td><td class="columnType" nowrap="1">varchar(100)</td><td class="columnDefault"></td><td>Nawa modelu zegarka.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kategoria_zegarka</td><td class="columnType" nowrap="1">varchar(2)</td><td class="columnDefault"></td><td>Obowizkowe. Kategorie zegarkw:
+C - klasyczny 
+S - sportowy 
+SM - smart
+SC - smart casual
+L - luksusowy 
+V - vintage</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Mechanizm_zegarka</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Obowizkowe. Dostpne mechanizmy:
+K - klasyczny
+A - automatyczny
+M - manulany
+H - hybrydowy
+S - solarny</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Material_koperty_zegarka</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Dostpne materiay:
+stal, zoto, ceramika, tytan, drewno, platyna, carbon, srebro, aluminium</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Rozmiar_koperty_zegarka</td><td class="columnType" nowrap="1">decimal(2, 0)</td><td class="columnDefault"></td><td>Rozmiar koperty podany w mm.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Pasek_zegarka</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Dostpne paski:
+skora, metal, nylon, silikon, perlon, ceramika, drewno, carbon</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Przeznaczenie_zegarka</td><td class="columnType" nowrap="1">char(1)</td><td class="columnDefault"></td><td>Przeznaczenie:
+M - mczyzna
+K - kobieta
+U - unisex
+D - dziecko</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Wodoodpornosc_zegarka</td><td class="columnType" nowrap="1">smallint</td><td class="columnDefault"></td><td>1 oznacza, e zegarek jest wodoodporny
+0 oznacza, e zegarek nie jest wodoodporny</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Cena_netto_zegarka</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td>Cena bez wliczonego podatku od towarw i usug (VAT)</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Cena_brutto_zegarka</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td class="columnDefault"></td><td> cena kocowa, jak konsument paci za towar obejmujca zarwno cen netto, jak i dodany podatek VAT.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kwota_vat_zegarka</td><td class="columnType" nowrap="1">decimal(3, 0)</td><td class="columnDefault"></td><td>Podatek, ktry jest doliczany do ceny sprzeday towarw</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Ilosc_towaru_na_stanie</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Ilo dostpnego towaru w caej sieci. Informacja potrzebna dla zamwie oraz w celach inwentaryzajnych.</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Osoba.ta" id="suffixAnchor">DBA.Osoba</a>
+</h3>
+<div class="comment">Osoba przechowuje dane osb trzech rodzajw
+Przechowuje imie, nazwisko, telefon, email dla:.
+1) pracownikw 
+2) wacicieli lokali najmowanych
+3) dostawcw / osb kontaktowych z danej firmy (kontrahent)
+4) kupujcych na faktur / osb kontaktowych z dane</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_osoby</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Identyfikator jednoznacznie identyfikujcy osob niezalenie od rodzaju</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Imie</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Imie osoby</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Nazwisko</td><td class="columnType" nowrap="1">varchar(30)</td><td class="columnDefault"></td><td>Nazwisko osoby</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Telefon</td><td class="columnType" nowrap="1">varchar(15)</td><td class="columnDefault"></td><td>Telefon moe przyjmowa znaki + okreslajace kierunkowy. Formaty z rnych krajw s obsugiwane</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Email</td><td class="columnType" nowrap="1">varchar(50)</td><td class="columnDefault"></td><td>Email kontaktowy do osoby</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Pozycja_przyjecia.ta" id="suffixAnchor">DBA.Pozycja_przyjecia</a>
+</h3>
+<div class="comment">Pozycja przyjcia okrela ilo kadego z przyjtych towarw.</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_przyjmij_dostawe">p_przyjmij_dostawe.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_przyjecia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Jednoznaczny identyfikator identyfikujcy dokument przyjcia zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_pozycja_przyjecia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Jednoznaczny identyfikator pozycji na dokumencie przyjcia zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Ilosc_towaru_przyjecia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Ilo przyjtego modelu zegarka w przyjciu zewntrznym.</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Pozycja_zamowienia.ta" id="suffixAnchor">DBA.Pozycja_zamowienia</a>
+</h3>
+<div class="comment">Pozycja zamwienia dotyczy jednego zamwienia.
+Pozycja zamwienia przechowuje 1 model zegarka w iloci rwnej 1, jest to wymagane w celu dalszego procesowania zamwienia - klient nie zamawia zegarka o konkretnym numerze seryjnym tylko pewien model.
+Konkr</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_dodaj_zamowienie">p_dodaj_zamowienie.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_zamowienia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Jednoznaczny identyfikator zamwienia</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_pozycja_zamowienia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator pozycji zamwienia wraz z zagregowanym Id_zamowienia jednoznacznie identyfikuje pozycje z danego zamwienia</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Zeg_Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_seryjny_zegarka</td><td class="columnType" nowrap="1">char(12)</td><td class="columnDefault"></td><td>Numer seryjny zegarka jest to numer jednoznacznie identyfikujcy zegarek od danego dostawcy. 
+Numery seryjne od rnych dostawcw mog si rni formatem, mog si powtrzy. Maksymalna dugo to 12 znakw.
+Wraz z kodem zegarka tworz dwu-atrybutowy kluc</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Pracownik.ta" id="suffixAnchor">DBA.Pracownik</a>
+</h3>
+<div class="comment">Pracownik jest to:
+osoba fizyczna zatrudniona w sieci sklepw z zegarkami, pracujca w jednym ze sklepw lub w magazynie gwnym.</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_pracownika</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Id pracownika jest to
+jednoznaczny klucz identyfikujcy pracownika. Umoliwia rozrnienie pracownikw o tym samym imieniu i nazwisku.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_pracownika_dane</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie identyfikujcy osob niezalenie od rodzaju</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Pra_Id_pracownika</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Id pracownika jest to
+jednoznaczny klucz identyfikujcy pracownika. Umoliwia rozrnienie pracownikw o tym samym imieniu i nazwisku.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Mag</td><td class="columnType" nowrap="1">smallint</td><td class="columnDefault"></td><td>Mag jest to 
+identyfikator, ktry jednoznacznie definiuje dan lokalizacj - sklep lub magazyn.
+Magazyn gwny jest to id 1.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Stanowisko_pracownika</td><td class="columnType" nowrap="1">varchar(30)</td><td class="columnDefault"></td><td>Stanowisko informuje o pozycji pracownika w firmie.
+Przykadowe stanowiska to:
+Manager sklepu
+Kierownik sklepu
+Sprzedawca
+Magazynier
+Kierownik magazynu
+Kierownik zmiany</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Login_systemowy</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Login do logowania do systemu firmowego WMS, ERP, POS</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Haslo_systemowe</td><td class="columnType" nowrap="1">varchar(50)</td><td class="columnDefault"></td><td>Ciag znakow po zakodowaniu przez aplikacje podczas tworzenia hasa i zapisane w bazie danych. Podczas prby zalogowania przez pracownika do systemu ERP / WMS / POS haso wpisane do pola formularza przez pracownika jest haszowane tak sam metod i porwn</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Promocja.ta" id="suffixAnchor">DBA.Promocja</a>
+</h3>
+<div class="comment">Promocja jest to
+informacja czy dany zegarek jest objty jak promocj. 
+Zegarek moe by objty kilkoma promocjami.
+Promocja moe dotyczy kilku zegarkw.</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_promocji</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Identyfikator jednoznacznie identyfikujcy promocj</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_rozpoczecia_promocji</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data okrelajca dat od ktrej obowizuje promocja</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_zakonczenia_promocji</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data do ktrej obowizuje promocja, wcznie</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Procent_znizki</td><td class="columnType" nowrap="1">decimal(4, 2)</td><td class="columnDefault"></td><td>Cakowita liczba opisujcy procent jaki zostanie zdjty z ceny zegarka. Jednostk jest procent</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Promocja_modelu_zegarka.ta" id="suffixAnchor">DBA.Promocja_modelu_zegarka</a>
+</h3>
+<div class="comment">Promocja moe dotyczy kilku zegarkw. Zegarek moe by objty kilkoma promocjami</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_promocji</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie identyfikujcy promocj</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Przyjecie_zewnetrzne.ta" id="suffixAnchor">DBA.Przyjecie_zewnetrzne</a>
+</h3>
+<div class="comment">Przyjcie zewntrzne jest to:
+rejestracja przyjcia towarw na magazyn gwny od dostawcw. Towar zakupiony hurtowo, nieznane numery seryjne.
+Przyjcie zewntrzne moe zawiera rne iloi rnych modeli zegarkw, dlatego potrzebuje intersekcji.</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_przyjmij_dostawe">p_przyjmij_dostawe.DBA</a>&nbsp;
+		</dd>
+</dl>
+<dl class="modifyingObjectList">
+<dt>Updated from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_wprowadz_fakture_za_przyjecia">p_wprowadz_fakture_za_przyjecia.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_przyjecia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Jednoznaczny identyfikator identyfikujcy dokument przyjcia zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_pracownika</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Id pracownika jest to
+jednoznaczny klucz identyfikujcy pracownika. Umoliwia rozrnienie pracownikw o tym samym imieniu i nazwisku.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_dokumentu_zakupu</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Id dokumentu zakupu jest to 
+jednoznaczny identyfikator identyfikujcy faktur wewntrz firmy.
+Identyfikator jest potrzebny, ze wzgldu na to e rni dostawcy mog wystawi faktur o tym samym numerze.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_wystawienia_przyjecia</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data wystawienai dokumentu przyjcia zewntrznego</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_wydania_dostawcy</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Numer wydanai dostawcy jest to
+numer dokumentu stworzonego przez dostawc i przejtego podczas przyjmowania towaru od dostawcy, potrzebne w celu weryfikacji towaru.</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Reklamacja.ta" id="suffixAnchor">DBA.Reklamacja</a>
+</h3>
+<div class="comment">Reklamacja przechowuje informacje o zareklamowanych przez klienta zegarkach. Za zareklamowany produkt, klient otrzymuje zwrot kosztw, co musi by wzite pod uwag w rozliczeniach dobowych, miesicznych, rocznych.
+Reklamacja przechowuje dat oraz powd z</div>
+<dl class="commentTags"></dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Numer_seryjny_zegarka</td><td class="columnType" nowrap="1">char(12)</td><td class="columnDefault"></td><td>Numer seryjny zegarka jest to numer jednoznacznie identyfikujcy zegarek od danego dostawcy. 
+Numery seryjne od rnych dostawcw mog si rni formatem, mog si powtrzy. Maksymalna dugo to 12 znakw.
+Wraz z kodem zegarka tworz dwu-atrybutowy kluc</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_reklamacji</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data zareklamowania produktu przez klienta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Powod_reklamacji</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td>Powd podany przez klienta podczas przyjmowania reklamacji zapisany przez pracownika sklepu</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Wydanie_zewnetrzne.ta" id="suffixAnchor">DBA.Wydanie_zewnetrzne</a>
+</h3>
+<div class="comment">Wydanie zewntrzne jest to:
+rejestracja wydania towarw ze stanu magazynu na rzecz klienta. Po zatwierdzeniu nabitych na kas produktw przez sprzedawc, dla tych produktw generowany jest dokument wydania zewntrznego. 
+W przypadku gdy klient poprosi o</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_wydaj_produkt_klientowi">p_wydaj_produkt_klientowi.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Jednoznaczny identyfikator dokumentu wydania zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_kontrahenta</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie okrelajcy kontrahenta</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_pracownika</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Id pracownika jest to
+jednoznaczny klucz identyfikujcy pracownika. Umoliwia rozrnienie pracownikw o tym samym imieniu i nazwisku.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_wystawienia_wydania</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data wystawienai dokumentu wydania zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Numer_kasy_fiskalnej</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Numer kasy fiskalnej jest nadany przez producenta kasy. Informacja potrzebna dla rozlicze z urzdem skarbowym.</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Zamowienie.ta" id="suffixAnchor">DBA.Zamowienie</a>
+</h3>
+<div class="comment">Zamwienie jest to
+zoone przez klienta zapotrzebowanie na zegarek, aktualnie niedostpny w danej lokalizacji.
+Zamwienie jest przypisane do konkretnej lokalizacji odbioru, moe si skada z kilku produktw.</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Inserted from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.p_dodaj_zamowienie">p_dodaj_zamowienie.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Id_zamowienia</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault">autoincrement</td><td>Jednoznaczny identyfikator zamwienia</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Mag</td><td class="columnType" nowrap="1">smallint</td><td class="columnDefault"></td><td>Mag jest to 
+identyfikator, ktry jednoznacznie definiuje dan lokalizacj - sklep lub magazyn.
+Magazyn gwny jest to id 1.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_zamawiajacego</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Identyfikator jednoznacznie identyfikujcy osob niezalenie od rodzaju</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Data_zamowienia</td><td class="columnType" nowrap="1">date</td><td class="columnDefault"></td><td>Data zoenia przez klienta zamwienia</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Status_zamowienia</td><td class="columnType" nowrap="1">varchar(1)</td><td class="columnDefault"></td><td>Status informuje o stanie zegarka. Podstawowe statusy:
+D - dostpny do odbioru
+O - odebrany przez klienta
+P - w trakcie pakowania
+R - przyjto do realizacji
+Z -   zamwiony do dostarczenia przez dostawc</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="DBA.Zegarek.ta" id="suffixAnchor">DBA.Zegarek</a>
+</h3>
+<div class="comment">Zegarek jest to:
+ewidencja konkretnych zegarkw o znanych numerach seryjnych przechowywanych w konkretnych lokalizacjach (sklepy, magazyny). Ewidencja przechowuje rwnie zegarki sprzedane, w razie zgoszonej reklamacji lub potrzeby serwisu zegarka przez</div>
+<dl class="commentTags"></dl>
+<dl class="modifyingObjectList">
+<dt>Updated from:</dt>
+<dd>
+<a target="detail" href="detail.html#DBA.t_wydanie_produktu_sklep_3.tr">t_wydanie_produktu_sklep_3.DBA</a>&nbsp;
+		<a target="detail" href="detail.html#DBA.t_wydanie_produktu_sklep_4.tr">t_wydanie_produktu_sklep_4.DBA</a>&nbsp;
+		</dd>
+</dl>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Kod_zegarka</td><td class="columnType" nowrap="1">char(8)</td><td class="columnDefault"></td><td>Kod produktu to identyfikator produktu zastpujcy jako klucz gwny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dwch pierwszych liter marki, dwch pierwszych liter modelu, 4 unikalnych cyfr.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">Numer_seryjny_zegarka</td><td class="columnType" nowrap="1">char(12)</td><td class="columnDefault"></td><td>Numer seryjny zegarka jest to numer jednoznacznie identyfikujcy zegarek od danego dostawcy. 
+Numery seryjne od rnych dostawcw mog si rni formatem, mog si powtrzy. Maksymalna dugo to 12 znakw.
+Wraz z kodem zegarka tworz dwu-atrybutowy kluc</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td>Jednoznaczny identyfikator dokumentu wydania zewntrznego.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Mag</td><td class="columnType" nowrap="1">smallint</td><td class="columnDefault"></td><td>Mag jest to 
+identyfikator, ktry jednoznacznie definiuje dan lokalizacj - sklep lub magazyn.
+Magazyn gwny jest to id 1.</td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">Certyfikat_zegarka</td><td class="columnType" nowrap="1">varchar(20)</td><td class="columnDefault"></td><td>Certyfikat zegarka potwierdzajce spenenie pewnych norm.
+COSC - Certyfikat chronometru potwierdzajcy, e zegarek spenia surowe szwajcarskie normy precyzji.
+METAS - Certyfikat potwierdzajcy wysz precyzj ni COSC oraz odporno na pola magnetyczne d</td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="dbo.maint_plan.ta" id="suffixAnchor">dbo.maint_plan</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">plan_id</td><td class="columnType" nowrap="1">unsigned int</td><td class="columnDefault">autoincrement</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">plan_name</td><td class="columnType" nowrap="1">varchar(128)</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">event_name</td><td class="columnType" nowrap="1">varchar(128)</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">disable_new_connections</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">disconnect_all_users</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">do_validate</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">validate_database_check</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">validate_checksum_check</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">validate_express_check</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">validate_normal_check</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">do_backup</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">disk_backup</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">full_backup</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">archive_backup</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">backup_path</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">tape_backup_prompt</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">tape_backup_comment</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">save_report_count</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">report_to_console</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_success</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_failure</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_recipients</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_server_name</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_port</td><td class="columnType" nowrap="1">integer</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_sender_name</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_sender_address</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_auth_user_name</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_auth_password</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_user_id</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_user_password</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_trusted_certificates</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_certificate_company</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_certificate_unit</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">email_smtp_certificate_name</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">custom_prevalidation_sql</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">custom_postbackup_sql</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="table">
+<a name="dbo.maint_plan_report.ta" id="suffixAnchor">dbo.maint_plan_report</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Default</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">plan_id</td><td class="columnType" nowrap="1">unsigned int</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1"><img src="pkey16.gif" style="padding-right:4px">start_time</td><td class="columnType" nowrap="1">timestamp</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">finish_time</td><td class="columnType" nowrap="1">timestamp</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">success</td><td class="columnType" nowrap="1">bit</td><td class="columnDefault"></td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1" style="padding-left:20px">report</td><td class="columnType" nowrap="1">long varchar</td><td class="columnDefault"></td><td></td>
+</tr>
+</table>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.f_liczba_sprzedanych_zegarkow" id="procAnchor">DBA.f_liczba_sprzedanych_zegarkow</a>
+</h3>
+<dl class="changes">
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html##TempSprzedane.ta">#TempSprzedane</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>FUNCTION</font> DBA.f_liczba_sprzedanych_zegarkow( 
+  <font color='#0000ff'>IN</font> p_model <font color='#0000ff'>VARCHAR</font>(8),
+  <font color='#0000ff'>IN</font> p_data_start <font color='#0000ff'>DATE</font>,
+  <font color='#0000ff'>IN</font> p_data_end <font color='#0000ff'>DATE</font> ) 
+<font color='#0000ff'>RETURNS</font> <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> var_liczba_sprzedanych <font color='#0000ff'>INTEGER</font> = 0;
+  <font color='#0000ff'>CREATE</font> <font color='#0000ff'>TABLE</font> #TempSprzedane(
+    Model <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>NULL</font>,
+    Count <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>NULL</font>,);
+  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> #TempSprzedane( Model,Count ) 
+    <font color='#0000ff'>SELECT</font> Zegarek.Kod_zegarka,
+      SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Zegarek.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 0 <font color='#0000ff'>ELSE</font> 1 <font color='#0000ff'>END</font>)
+      <font color='#0000ff'>FROM</font> Zegarek
+        <font color='#0000ff'>JOIN</font> Wydanie_zewnetrzne <font color='#0000ff'>ON</font> Zegarek.Id_wydania = Wydanie_zewnetrzne.Id_wydania
+      <font color='#0000ff'>WHERE</font> Wydanie_zewnetrzne.Data_wystawienia_wydania <font color='#0000ff'>BETWEEN</font> p_data_start <font color='#0000ff'>AND</font> p_data_end
+      <font color='#0000ff'>AND</font> Zegarek.Kod_zegarka = p_model
+      <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Zegarek.Kod_zegarka;
+  <font color='#0000ff'>SELECT</font> COUNT <font color='#0000ff'>INTO</font> var_liczba_sprzedanych <font color='#0000ff'>FROM</font> #TempSprzedane <font color='#0000ff'>WHERE</font> Model = p_model;
+  <font color='#0000ff'>DROP</font> <font color='#0000ff'>TABLE</font> #TempSprzedane;
+  <font color='#0000ff'>RETURN</font> var_liczba_sprzedanych
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.f_premia_pracownika" id="procAnchor">DBA.f_premia_pracownika</a>
+</h3>
+<dl class="changes"></dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>FUNCTION</font> DBA.f_premia_pracownika( 
+  <font color='#0000ff'>IN</font> p_id_pracownika <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> p_miesiac <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> p_rok <font color='#0000ff'>INTEGER</font> ) 
+<font color='#0000ff'>RETURNS</font> <font color='#0000ff'>DECIMAL</font>(15,2) <font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> var_model <font color='#0000ff'>VARCHAR</font>(8);
+  <font color='#0000ff'>DECLARE</font> var_premia <font color='#0000ff'>DECIMAL</font>(15,2) = 0.0;
+  <font color='#0000ff'>DECLARE</font> var_ilosc_sprzedanych_modelu <font color='#0000ff'>INTEGER</font>;
+  <font color='#0000ff'>DECLARE</font> var_cena_modelu <font color='#0000ff'>DECIMAL</font>(15,2);
+  <font color='#0000ff'>DECLARE</font> var_cursor <font color='#0000ff'>DYNAMIC</font> <font color='#0000ff'>SCROLL</font> <font color='#0000ff'>CURSOR</font> <font color='#0000ff'>FOR</font>
+    <font color='#0000ff'>SELECT</font> Zegarek.Kod_zegarka,
+      count(Zegarek.Numer_seryjny_zegarka),
+      sum(Model_zegarka.Cena_brutto_zegarka)
+      <font color='#0000ff'>FROM</font> Zegarek
+        <font color='#0000ff'>JOIN</font> Wydanie_zewnetrzne <font color='#0000ff'>ON</font> Zegarek.Id_wydania = Wydanie_zewnetrzne.Id_wydania
+        <font color='#0000ff'>JOIN</font> Model_zegarka <font color='#0000ff'>ON</font> Zegarek.Kod_zegarka = Model_zegarka.Kod_zegarka
+      <font color='#0000ff'>WHERE</font> Wydanie_zewnetrzne.Id_pracownika = p_id_pracownika
+      <font color='#0000ff'>AND</font> Zegarek.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>
+      <font color='#0000ff'>AND</font> MONTH(Wydanie_zewnetrzne.Data_wystawienia_wydania) = p_miesiac
+      <font color='#0000ff'>AND</font> YEAR(Wydanie_zewnetrzne.Data_wystawienia_wydania) = p_rok
+      <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Zegarek.Kod_zegarka;
+  <font color='#0000ff'>DECLARE</font> i <font color='#0000ff'>INTEGER</font> = 1;
+  <font color='#0000ff'>DECLARE</font> j <font color='#0000ff'>INTEGER</font> = 1;
+  <font color='#0000ff'>OPEN</font> var_cursor;
+  petla: <font color='#0000ff'>LOOP</font>
+    <font color='#0000ff'>FETCH</font> next var_cursor <font color='#0000ff'>INTO</font> var_model,var_ilosc_sprzedanych_modelu,var_cena_modelu;
+    <font color='#0000ff'>IF</font> sqlcode <> 0 <font color='#0000ff'>THEN</font>
+      leave petla
+    <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+    <font color='#0000ff'>SET</font> j = 1;
+    <font color='#0000ff'>WHILE</font> j <= var_ilosc_sprzedanych_modelu <font color='#0000ff'>LOOP</font>
+      <font color='#0000ff'>IF</font> remainder(i,50) = 0 <font color='#0000ff'>THEN</font>
+        <font color='#0000ff'>SET</font> var_premia = var_premia+(var_cena_modelu*.1)
+      <font color='#0000ff'>ELSEIF</font> remainder(i,10) = 0 <font color='#0000ff'>THEN</font>
+        <font color='#0000ff'>SET</font> var_premia = var_premia+(var_cena_modelu*.07)
+      <font color='#0000ff'>ELSEIF</font> remainder(i,5) = 0 <font color='#0000ff'>THEN</font>
+        <font color='#0000ff'>SET</font> var_premia = var_premia+(var_cena_modelu*.05)
+      <font color='#0000ff'>ELSE</font>
+        <font color='#0000ff'>SET</font> var_premia = var_premia+(var_cena_modelu*.01)
+      <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+      <font color='#0000ff'>SET</font> i = i+1;
+      <font color='#0000ff'>SET</font> j = j+1
+    <font color='#0000ff'>END</font> <font color='#0000ff'>LOOP</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>LOOP</font> petla;
+  <font color='#0000ff'>CLOSE</font> var_cursor;
+  <font color='#0000ff'>DEALLOCATE</font> <font color='#0000ff'>CURSOR</font> var_cursor;
+  <font color='#0000ff'>RETURN</font> var_premia
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.f_ulubiony_zegarek" id="procAnchor">DBA.f_ulubiony_zegarek</a>
+</h3>
+<dl class="changes"></dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>FUNCTION</font> DBA.f_ulubiony_zegarek( 
+  <font color='#0000ff'>IN</font> p_miesiac <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> p_rok <font color='#0000ff'>INTEGER</font> ) 
+<font color='#0000ff'>RETURNS</font> <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> var_model <font color='#0000ff'>VARCHAR</font>(8);
+  <font color='#0000ff'>DECLARE</font> var_liczba_zamawianych <font color='#0000ff'>INTEGER</font> = 0;
+  <font color='#0000ff'>DECLARE</font> var_max_liczba_zamawianych <font color='#0000ff'>INTEGER</font> = 0;
+  <font color='#0000ff'>DECLARE</font> var_max_model <font color='#0000ff'>VARCHAR</font>(8) = <font color='#ff0000'>''</font>;
+  <font color='#0000ff'>DECLARE</font> var_cursor <font color='#0000ff'>DYNAMIC</font> <font color='#0000ff'>SCROLL</font> <font color='#0000ff'>CURSOR</font> <font color='#0000ff'>FOR</font>
+    <font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka,
+      count(Pozycja_zamowienia.Id_zamowienia)
+      <font color='#0000ff'>FROM</font> Model_zegarka
+        <font color='#0000ff'>JOIN</font> Pozycja_zamowienia <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Pozycja_zamowienia.Kod_zegarka
+        <font color='#0000ff'>JOIN</font> Zamowienie <font color='#0000ff'>ON</font> Pozycja_zamowienia.Id_zamowienia = Zamowienie.Id_zamowienia
+      <font color='#0000ff'>WHERE</font> MONTH(Zamowienie.Data_zamowienia) = p_miesiac
+      <font color='#0000ff'>AND</font> YEAR(Zamowienie.Data_zamowienia) = p_rok
+      <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Model_zegarka.Kod_zegarka;
+  <font color='#0000ff'>OPEN</font> var_cursor;
+  petla: <font color='#0000ff'>LOOP</font>
+    <font color='#0000ff'>FETCH</font> next var_cursor <font color='#0000ff'>INTO</font> var_model,var_liczba_zamawianych;
+    <font color='#0000ff'>IF</font> sqlcode <> 0 <font color='#0000ff'>THEN</font>
+      leave petla
+    <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+    <font color='#0000ff'>IF</font> var_liczba_zamawianych > var_max_liczba_zamawianych <font color='#0000ff'>THEN</font>
+      <font color='#0000ff'>SET</font> var_max_model = var_model;
+      <font color='#0000ff'>SET</font> var_max_liczba_zamawianych = var_liczba_zamawianych
+    <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>LOOP</font> petla;
+  <font color='#0000ff'>CLOSE</font> var_cursor;
+  <font color='#0000ff'>DEALLOCATE</font> <font color='#0000ff'>CURSOR</font> var_cursor;
+  <font color='#0000ff'>RETURN</font> var_max_model
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.p_dodaj_zamowienie" id="procAnchor">DBA.p_dodaj_zamowienie</a>
+</h3>
+<dl class="changes">
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Zamowienie.ta">DBA.Zamowienie</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#DBA.Pozycja_zamowienia.ta">DBA.Pozycja_zamowienia</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> DBA.p_dodaj_zamowienie( 
+  @var_osoba_id <font color='#0000ff'>INTEGER</font>,
+  @var_lokal_id <font color='#0000ff'>INTEGER</font>,
+  @var_zegarek_id1 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id2 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id3 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id4 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id5 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id6 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id7 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id8 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id9 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font>,
+  @var_zegarek_id10 <font color='#0000ff'>VARCHAR</font>(8)= <font color='#0000ff'>NULL</font> ) 
+<font color='#0000ff'>AS</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> @var_ilosc <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_nowa_zamowienie_id <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @i <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_zegarek_id <font color='#0000ff'>VARCHAR</font>(8)
+  <font color='#0000ff'>DECLARE</font> @var_ilosc_zamowionych <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_if_roll <font color='#0000ff'>INTEGER</font> = 0
+  <font color='#0000ff'>BEGIN</font> transaction dodanie_zamowienia_trans
+  <font color='#0000ff'>SAVE</font> transaction dodanie_zamowienia_trans
+  <font color='#00b200'>--The ROLLBACK TRANSACTION statement undoes any changes that have been made since a savepoint was established using SAVE TRANSACTION. 
+</font>  <font color='#00b200'>--Changes made before the SAVE TRANSACTION are not undone; they are still pending. 
+</font>  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Zamowienie( Mag,Id_zamawiajacego,Data_zamowienia,Status_zamowienia ) <font color='#0000ff'>VALUES</font>
+    ( @var_lokal_id,@var_osoba_id,GETDATE(),<font color='#ff0000'>'R'</font> ) 
+  <font color='#0000ff'>SELECT</font> <font color='#0000ff'>TOP</font> 1 @var_nowa_zamowienie_id = Id_zamowienia
+    <font color='#0000ff'>FROM</font> Zamowienie
+    <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> Id_zamowienia <font color='#0000ff'>DESC</font>
+  <font color='#0000ff'>SET</font> @i = 1
+  <font color='#0000ff'>WHILE</font> @i <= 10 <font color='#0000ff'>AND</font> @var_if_roll = 0
+    <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>IF</font> @i = 1 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id1
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 2 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id2
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 3 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id3
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 4 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id4
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 5 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id5
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 6 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id6
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 7 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id7
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 8 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id8
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 9 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id9
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 10 <font color='#0000ff'>BEGIN</font> <font color='#0000ff'>SET</font> @var_zegarek_id = @var_zegarek_id10
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @var_zegarek_id <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>
+        <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SELECT</font> @var_ilosc_zamowionych = COUNT()
+            <font color='#0000ff'>FROM</font> Pozycja_zamowienia
+            <font color='#0000ff'>WHERE</font> Kod_zegarka = @var_zegarek_id <font color='#0000ff'>AND</font> Id_zamowienia = @var_nowa_zamowienie_id
+          <font color='#0000ff'>SELECT</font> @var_ilosc = Ilosc_towaru_na_stanie
+            <font color='#0000ff'>FROM</font> Model_zegarka
+            <font color='#0000ff'>WHERE</font> Kod_zegarka = @var_zegarek_id
+          <font color='#0000ff'>IF</font>(@var_ilosc_zamowionych+1) > @var_ilosc <font color='#0000ff'>OR</font> @var_ilosc <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>OR</font> @var_ilosc <= 0
+            <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>MESSAGE</font> <font color='#ff0000'>'Brak '</font> || @var_zegarek_id || <font color='#ff0000'>' na stanie'</font> <font color='#0000ff'>TO</font> client
+              <font color='#0000ff'>SET</font> @var_if_roll = 1
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Pozycja_zamowienia( Id_zamowienia,Id_pozycja_zamowienia,Kod_zegarka ) <font color='#0000ff'>VALUES</font>
+            ( @var_nowa_zamowienie_id,@i,@var_zegarek_id ) 
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>SET</font> @i = @i+1
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>IF</font> @var_if_roll = 1
+    <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>ROLLBACK</font> transaction dodanie_zamowienia_trans
+      <font color='#0000ff'>RETURN</font>
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>COMMIT</font> transaction dodanie_zamowienia_trans
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.p_przyjmij_dostawe" id="procAnchor">DBA.p_przyjmij_dostawe</a>
+</h3>
+<dl class="changes">
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Przyjecie_zewnetrzne.ta">DBA.Przyjecie_zewnetrzne</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#DBA.Pozycja_przyjecia.ta">DBA.Pozycja_przyjecia</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> DBA.p_przyjmij_dostawe( 
+  <font color='#0000ff'>IN</font> var_kontrahent_id <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> var_pracownik_id <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> var_wz_dostawcy <font color='#0000ff'>VARCHAR</font>(8),
+  <font color='#0000ff'>IN</font> var_zegarek_id1 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id1 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id2 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id2 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id3 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id3 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id4 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id4 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id5 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id5 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id6 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id6 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id7 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id7 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id8 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id8 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id9 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id9 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0,
+  <font color='#0000ff'>IN</font> var_zegarek_id10 <font color='#0000ff'>VARCHAR</font>(8) <font color='#0000ff'>DEFAULT</font> <font color='#0000ff'>NULL</font>,
+  <font color='#0000ff'>IN</font> var_ilosc_id10 <font color='#0000ff'>INTEGER</font> <font color='#0000ff'>DEFAULT</font> 0 ) 
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> var_ilosc <font color='#0000ff'>INTEGER</font>;
+  <font color='#0000ff'>DECLARE</font> var_nowe_przyjecie_id <font color='#0000ff'>INTEGER</font>;
+  <font color='#0000ff'>DECLARE</font> i <font color='#0000ff'>INTEGER</font>;
+  <font color='#0000ff'>DECLARE</font> var_zegarek_id <font color='#0000ff'>VARCHAR</font>(8);
+  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Przyjecie_zewnetrzne( Id_pracownika,Id_kontrahenta,Id_dokumentu_zakupu,Data_wystawienia_przyjecia,Numer_wydania_dostawcy ) <font color='#0000ff'>VALUES</font>
+    ( var_pracownik_id,var_kontrahent_id,<font color='#0000ff'>NULL</font>,getdate(),var_wz_dostawcy ) ;
+  <font color='#0000ff'>SELECT</font> <font color='#0000ff'>TOP</font> 1 Id_przyjecia
+    <font color='#0000ff'>INTO</font> var_nowe_przyjecie_id <font color='#0000ff'>FROM</font> Przyjecie_zewnetrzne
+    <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> Id_przyjecia <font color='#0000ff'>DESC</font>;
+  <font color='#0000ff'>SET</font> i = 1;
+  <font color='#0000ff'>WHILE</font> i <= 10 <font color='#0000ff'>LOOP</font>
+    <font color='#0000ff'>IF</font> i = 1 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id1;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id1
+    <font color='#0000ff'>ELSEIF</font> i = 2 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id2;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id2
+    <font color='#0000ff'>ELSEIF</font> i = 3 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id3;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id3
+    <font color='#0000ff'>ELSEIF</font> i = 4 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id4;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id4
+    <font color='#0000ff'>ELSEIF</font> i = 5 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id5;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id5
+    <font color='#0000ff'>ELSEIF</font> i = 6 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id6;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id6
+    <font color='#0000ff'>ELSEIF</font> i = 7 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id7;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id7
+    <font color='#0000ff'>ELSEIF</font> i = 8 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id8;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id8
+    <font color='#0000ff'>ELSEIF</font> i = 9 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id9;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id9
+    <font color='#0000ff'>ELSEIF</font> i = 10 <font color='#0000ff'>THEN</font> <font color='#0000ff'>SET</font> var_zegarek_id = var_zegarek_id10;
+      <font color='#0000ff'>SET</font> var_ilosc = var_ilosc_id10
+    <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+    <font color='#0000ff'>IF</font> var_zegarek_id <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>AND</font> var_ilosc <> 0 <font color='#0000ff'>AND</font> var_ilosc <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font>
+      <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Pozycja_przyjecia( Id_przyjecia,Id_pozycja_przyjecia,Kod_zegarka,Ilosc_towaru_przyjecia ) <font color='#0000ff'>VALUES</font>
+        ( var_nowe_przyjecie_id,i,var_zegarek_id,var_ilosc ) 
+    <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+    <font color='#0000ff'>SET</font> i = i+1
+  <font color='#0000ff'>END</font> <font color='#0000ff'>LOOP</font>
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.p_wprowadz_fakture_za_przyjecia" id="procAnchor">DBA.p_wprowadz_fakture_za_przyjecia</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Przyjecie_zewnetrzne.ta">DBA.Przyjecie_zewnetrzne</a></code>&nbsp;
+				</dd>
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Dokument_zakupu.ta">DBA.Dokument_zakupu</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> DBA.p_wprowadz_fakture_za_przyjecia( 
+  @var_kwota_netto <font color='#0000ff'>DECIMAL</font>(10,2),
+  @var_vat <font color='#0000ff'>DECIMAL</font>(3),
+  @var_faktura_od_dostawcy <font color='#0000ff'>VARCHAR</font>(20),
+  @var_przyjecie_id1 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id2 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id3 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id4 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id5 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id6 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id7 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id8 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id9 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @var_przyjecie_id10 <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font> ) 
+<font color='#0000ff'>AS</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> @var_id_dok_zakup <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_przyjecie <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_kontrahent <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_kontrahent_temp <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @v_is_different <font color='#0000ff'>INTEGER</font> = 0
+  <font color='#0000ff'>DECLARE</font> @v_kwota_brutto <font color='#0000ff'>DECIMAL</font>(10,2)
+  <font color='#0000ff'>DECLARE</font> @i <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>BEGIN</font> transaction wprowadzenie_faktury_trans
+  <font color='#0000ff'>SET</font> @v_kwota_brutto = @var_kwota_netto*(1+@var_vat/100)
+  <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id1
+  <font color='#0000ff'>SELECT</font> @var_kontrahent = Id_kontrahenta
+    <font color='#0000ff'>FROM</font> Przyjecie_zewnetrzne
+    <font color='#0000ff'>WHERE</font> Id_przyjecia = @var_przyjecie_id1
+  <font color='#0000ff'>IF</font> @var_kontrahent <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>ROLLBACK</font> transaction wprowadzenie_faktury_trans
+      <font color='#0000ff'>RAISERROR</font> 23000 <font color='#ff0000'>'Nie znaleziono kontrahenta'</font>
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Dokument_zakupu
+    ( Id_kontrahenta,Numer_dokumentu_zakupu,Data_wystawienia_zakupu,
+    Typ_dokumentu_zakupu,Wartosc_netto_zakupu,Kwota_vat_zakupu,
+    Wartosc_brutto_zakupu,Status_platnosci_zakupu ) <font color='#0000ff'>VALUES</font>
+    ( @var_kontrahent,@var_faktura_od_dostawcy,getdate(),
+    <font color='#ff0000'>'F'</font>,@var_kwota_netto,@var_vat,
+    @v_kwota_brutto,<font color='#ff0000'>'N'</font> ) 
+  <font color='#0000ff'>SELECT</font> <font color='#0000ff'>TOP</font> 1
+    @var_id_dok_zakup = Id_dokumentu_zakupu
+    <font color='#0000ff'>FROM</font> Dokument_zakupu
+    <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> Id_dokumentu_zakupu <font color='#0000ff'>DESC</font>
+  <font color='#0000ff'>SET</font> @i = 1
+  <font color='#0000ff'>WHILE</font> @i <= 10
+    <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>IF</font> @i = 1 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id1
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 2 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id2
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 3 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id3
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 4 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id4
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 5 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id5
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 6 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id6
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 7 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id7
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 8 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id8
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 9 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id9
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 10 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_przyjecie = @var_przyjecie_id10
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @var_przyjecie <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SELECT</font> @var_kontrahent_temp = Id_kontrahenta
+            <font color='#0000ff'>FROM</font> Przyjecie_zewnetrzne
+            <font color='#0000ff'>WHERE</font> Id_przyjecia = @var_przyjecie
+          <font color='#0000ff'>IF</font> @var_kontrahent_temp <> @var_kontrahent <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>RAISERROR</font> 23005 <font color='#ff0000'>'Faktura musi dotyczyc przyjec tylko od jednego dostawcy.'</font>
+              <font color='#0000ff'>ROLLBACK</font> transaction wprowadzenie_faktury_trans
+              <font color='#0000ff'>RETURN</font>
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>IF</font> <font color='#0000ff'>EXISTS</font>
+            (<font color='#0000ff'>SELECT</font> 1
+              <font color='#0000ff'>FROM</font> Przyjecie_zewnetrzne
+              <font color='#0000ff'>WHERE</font> Id_przyjecia = @var_przyjecie
+              <font color='#0000ff'>AND</font> Id_dokumentu_zakupu <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>)
+            <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>RAISERROR</font> 23006 <font color='#ff0000'>'Przyjecie ma juz przypisana fakture.'</font>
+              <font color='#0000ff'>ROLLBACK</font> transaction wprowadzenie_faktury_trans
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>UPDATE</font> Przyjecie_zewnetrzne
+            <font color='#0000ff'>SET</font> Id_dokumentu_zakupu = @var_id_dok_zakup
+            <font color='#0000ff'>WHERE</font> Id_przyjecia = @var_przyjecie
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>SET</font> @i = @i+1
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>IF</font> @v_is_different = 1 <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>ROLLBACK</font> transaction wprowadzenie_faktury_trans
+      <font color='#0000ff'>RAISERROR</font> 23007 <font color='#ff0000'>'Kontrahenci są różni, operacja została wycofana.'</font>
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>COMMIT</font> transaction wprowadzenie_faktury_trans
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="DBA.p_wydaj_produkt_klientowi" id="procAnchor">DBA.p_wydaj_produkt_klientowi</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#v_oferta_sklep_2.ta">v_oferta_sklep_2</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#v_oferta_sklep_3.ta">v_oferta_sklep_3</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#v_oferta_sklep_4.ta">v_oferta_sklep_4</a></code>&nbsp;
+				</dd>
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Wydanie_zewnetrzne.ta">DBA.Wydanie_zewnetrzne</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#DBA.Dokument_sprzedazy.ta">DBA.Dokument_sprzedazy</a></code>&nbsp;
+				<code><a target="detail" href="detail.html#DBA.Dokument_sprzedazy.ta">DBA.Dokument_sprzedazy</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> DBA.p_wydaj_produkt_klientowi( 
+  @p_typ_dokumentu <font color='#0000ff'>VARCHAR</font>(1)= <font color='#ff0000'>'P'</font>, <font color='#00b200'>--P-paragon    F-faktura
+</font>  @p_kontrahent_id <font color='#0000ff'>INTEGER</font>= <font color='#0000ff'>NULL</font>,
+  @p_pracownik_id <font color='#0000ff'>INTEGER</font>,
+  @p_numer_kasy_fiskalnej <font color='#0000ff'>INTEGER</font>,
+  @p_zegarek_marka1 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_model1 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_sn1 <font color='#0000ff'>VARCHAR</font>(12)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_marka2 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_model2 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_sn2 <font color='#0000ff'>VARCHAR</font>(12)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_marka3 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_model3 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_sn3 <font color='#0000ff'>VARCHAR</font>(12)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_marka4 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_model4 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_sn4 <font color='#0000ff'>VARCHAR</font>(12)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_marka5 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_model5 <font color='#0000ff'>VARCHAR</font>(100)= <font color='#0000ff'>NULL</font>,
+  @p_zegarek_sn5 <font color='#0000ff'>VARCHAR</font>(12)= <font color='#0000ff'>NULL</font> ) <font color='#0000ff'>AS</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DECLARE</font> @i <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_zegarek_model <font color='#0000ff'>VARCHAR</font>(100)
+  <font color='#0000ff'>DECLARE</font> @var_zegarek_marka <font color='#0000ff'>VARCHAR</font>(100)
+  <font color='#0000ff'>DECLARE</font> @var_zegarek_sn <font color='#0000ff'>VARCHAR</font>(12)
+  <font color='#0000ff'>DECLARE</font> @var_wydanie_id <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_mag_id <font color='#0000ff'>INTEGER</font>
+  <font color='#0000ff'>DECLARE</font> @var_mag_nazwa <font color='#0000ff'>VARCHAR</font>(20)
+  <font color='#0000ff'>DECLARE</font> @var_kwota_brutto_temp <font color='#0000ff'>INTEGER</font> = 0
+  <font color='#0000ff'>DECLARE</font> @var_kwota_brutto_suma <font color='#0000ff'>INTEGER</font> = 0
+  <font color='#0000ff'>BEGIN</font> transaction wydanie_produktu_trans
+  <font color='#0000ff'>SELECT</font> @var_mag_id = Mag
+    <font color='#0000ff'>FROM</font> Pracownik
+    <font color='#0000ff'>WHERE</font> Id_pracownika = @p_pracownik_id
+  <font color='#0000ff'>IF</font> @var_mag_id <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+      <font color='#0000ff'>RAISERROR</font> 23007(<font color='#ff0000'>'Nie ma takiego pracownika'</font>)
+    <font color='#0000ff'>END</font>
+  <font color='#00b200'>--RAISERROR 230222 @var_mag_id
+</font>  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Wydanie_zewnetrzne( Id_kontrahenta,Id_pracownika,Data_wystawienia_wydania,Numer_kasy_fiskalnej ) <font color='#0000ff'>VALUES</font>
+    ( @p_kontrahent_id,
+    @p_pracownik_id,
+    getdate(),
+    <font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> @p_numer_kasy_fiskalnej = 1 <font color='#0000ff'>THEN</font> <font color='#ff0000'>'Kasa_001'</font>
+    <font color='#0000ff'>WHEN</font> @p_numer_kasy_fiskalnej = 2 <font color='#0000ff'>THEN</font> <font color='#ff0000'>'Kasa_002'</font>
+    <font color='#0000ff'>WHEN</font> @p_numer_kasy_fiskalnej = 3 <font color='#0000ff'>THEN</font> <font color='#ff0000'>'Kasa_003'</font>
+    <font color='#0000ff'>ELSE</font> <font color='#ff0000'>'Kasa_000'</font>
+    <font color='#0000ff'>END</font> ) 
+  <font color='#0000ff'>SELECT</font> <font color='#0000ff'>TOP</font> 1 @var_wydanie_id = Id_wydania
+    <font color='#0000ff'>FROM</font> Wydanie_zewnetrzne
+    <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> Id_wydania <font color='#0000ff'>DESC</font>
+  <font color='#0000ff'>IF</font> @var_wydanie_id <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+      <font color='#0000ff'>RAISERROR</font> 23008(<font color='#ff0000'>'Nie udalo sie utworzyc dokumentu wydania zewnetrznego'</font>)
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>SET</font> @i = 1
+  <font color='#0000ff'>WHILE</font> @i <= 5
+    <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>IF</font> @i = 1 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_zegarek_model = @p_zegarek_model1
+          <font color='#0000ff'>SET</font> @var_zegarek_marka = @p_zegarek_marka1
+          <font color='#0000ff'>SET</font> @var_zegarek_sn = @p_zegarek_sn1
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 2 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_zegarek_model = @p_zegarek_model2
+          <font color='#0000ff'>SET</font> @var_zegarek_marka = @p_zegarek_marka2
+          <font color='#0000ff'>SET</font> @var_zegarek_sn = @p_zegarek_sn2
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 3 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_zegarek_model = @p_zegarek_model3
+          <font color='#0000ff'>SET</font> @var_zegarek_marka = @p_zegarek_marka3
+          <font color='#0000ff'>SET</font> @var_zegarek_sn = @p_zegarek_sn3
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 4 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_zegarek_model = @p_zegarek_model4
+          <font color='#0000ff'>SET</font> @var_zegarek_marka = @p_zegarek_marka4
+          <font color='#0000ff'>SET</font> @var_zegarek_sn = @p_zegarek_sn4
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @i = 5 <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_zegarek_model = @p_zegarek_model5
+          <font color='#0000ff'>SET</font> @var_zegarek_marka = @p_zegarek_marka5
+          <font color='#0000ff'>SET</font> @var_zegarek_sn = @p_zegarek_sn5
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @var_zegarek_model <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>AND</font> @var_zegarek_marka <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>AND</font> @var_zegarek_sn <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>
+        <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>IF</font> <font color='#0000ff'>EXISTS</font>
+            (<font color='#0000ff'>SELECT</font> 1
+              <font color='#0000ff'>FROM</font> Zegarek
+              <font color='#0000ff'>WHERE</font> Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>
+              <font color='#0000ff'>AND</font> Kod_zegarka
+               = (<font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka
+                <font color='#0000ff'>FROM</font> Model_zegarka
+                <font color='#0000ff'>WHERE</font> Model_zegarka.Marka_zegarka+<font color='#ff0000'>' '</font>+Model_zegarka.Model_zegarka
+                 = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model)
+              <font color='#0000ff'>AND</font> Numer_seryjny_zegarka = @var_zegarek_sn)
+            <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+              <font color='#0000ff'>RAISERROR</font> 23009 <font color='#ff0000'>'Zegarek nie jest juz dostepny'</font>
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>IF</font> @var_mag_id = 2 <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>SELECT</font> @var_kwota_brutto_temp = Cena_po_promocji
+                <font color='#0000ff'>FROM</font> v_oferta_sklep_2
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+              <font color='#0000ff'>IF</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>EXISTS</font>
+                (<font color='#0000ff'>SELECT</font> 1 <font color='#0000ff'>FROM</font> v_oferta_sklep_2
+                  <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                  <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn)
+                <font color='#0000ff'>BEGIN</font>
+                  <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+                  <font color='#0000ff'>RAISERROR</font> 23009 <font color='#ff0000'>'W podanym sklepie nie ma takiego produktu'</font>
+                <font color='#0000ff'>END</font>
+              <font color='#0000ff'>UPDATE</font>
+                v_oferta_sklep_2
+                <font color='#0000ff'>SET</font> Id_wydania = @var_wydanie_id
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>IF</font> @var_mag_id = 3 <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>SELECT</font> @var_kwota_brutto_temp = Cena_po_promocji
+                <font color='#0000ff'>FROM</font> v_oferta_sklep_3
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+              <font color='#0000ff'>IF</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>EXISTS</font>
+                (<font color='#0000ff'>SELECT</font> 1 <font color='#0000ff'>FROM</font> v_oferta_sklep_3
+                  <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                  <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn)
+                <font color='#0000ff'>BEGIN</font>
+                  <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+                  <font color='#0000ff'>RAISERROR</font> 23009 <font color='#ff0000'>'W podanym sklepie nie ma takiego produktu'</font>
+                <font color='#0000ff'>END</font>
+              <font color='#0000ff'>UPDATE</font>
+                v_oferta_sklep_3
+                <font color='#0000ff'>SET</font> Id_wydania = @var_wydanie_id
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>IF</font> @var_mag_id = 4 <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>SELECT</font> @var_kwota_brutto_temp = Cena_po_promocji
+                <font color='#0000ff'>FROM</font> v_oferta_sklep_4
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+              <font color='#0000ff'>IF</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>EXISTS</font>
+                (<font color='#0000ff'>SELECT</font> 1 <font color='#0000ff'>FROM</font> v_oferta_sklep_4
+                  <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                  <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn)
+                <font color='#0000ff'>BEGIN</font>
+                  <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+                  <font color='#0000ff'>RAISERROR</font> 23015 <font color='#ff0000'>'W podanym sklepie nie ma takiego produktu'</font>
+                <font color='#0000ff'>END</font>
+              <font color='#0000ff'>UPDATE</font>
+                v_oferta_sklep_4
+                <font color='#0000ff'>SET</font> Id_wydania = @var_wydanie_id
+                <font color='#0000ff'>WHERE</font> Model = @var_zegarek_marka+<font color='#ff0000'>' '</font>+@var_zegarek_model
+                <font color='#0000ff'>AND</font> Numer_Seryjny = @var_zegarek_sn
+            <font color='#0000ff'>END</font>
+          <font color='#0000ff'>IF</font> @var_mag_id <> 2 <font color='#0000ff'>AND</font> @var_mag_id <> 3 <font color='#0000ff'>AND</font> @var_mag_id <> 4 <font color='#0000ff'>BEGIN</font>
+              <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+              <font color='#0000ff'>RAISERROR</font> 23016 <font color='#ff0000'>'Nieprawidlowy identyfikator sklepu lub pracownika'</font>
+            <font color='#0000ff'>END</font>
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>IF</font> @var_kwota_brutto_temp <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>SET</font> @var_kwota_brutto_suma = @var_kwota_brutto_suma+@var_kwota_brutto_temp
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>SET</font> @var_kwota_brutto_temp = 0
+      <font color='#0000ff'>SET</font> @i = @i+1
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>IF</font> @p_typ_dokumentu = <font color='#ff0000'>'P'</font> <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Dokument_sprzedazy
+        ( Id_wydania,Id_kontrahenta,Numer_dokumentu_sprzedazy,
+        Data_wystawienia_sprzedazy,Data_zaplaty_sprzedazy,Typ_dokumentu_sprzedazy,
+        Wartosc_netto_sprzedazy,Kwota_vat_sprzedazy,Wartosc_brutto_sprzedazy,
+        Status_platnosci_sprzedazy,
+        Metoda_platnosci_sprzedazy ) <font color='#0000ff'>VALUES</font>
+        ( @var_wydanie_id,@p_kontrahent_id,
+        <font color='#ff0000'>''</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,YEAR(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,MONTH(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,DAY(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,@var_wydanie_id)+<font color='#ff0000'>''</font>,
+        getdate(),getdate(),<font color='#ff0000'>'P'</font>,
+        @var_kwota_brutto_suma/(1+23.0/100),23,@var_kwota_brutto_suma,
+        <font color='#ff0000'>'O'</font>,<font color='#ff0000'>'G'</font> ) 
+    <font color='#0000ff'>END</font>
+  <font color='#0000ff'>IF</font> @p_typ_dokumentu = <font color='#ff0000'>'F'</font>
+    <font color='#0000ff'>BEGIN</font>
+      <font color='#0000ff'>IF</font> @p_kontrahent_id <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>BEGIN</font>
+          <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+          <font color='#0000ff'>RAISERROR</font> 23011 <font color='#ff0000'>'Dla faktury wymagany jest kontrahent'</font>
+        <font color='#0000ff'>END</font>
+      <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> Dokument_sprzedazy
+        ( Id_wydania,Id_kontrahenta,Numer_dokumentu_sprzedazy,
+        Data_wystawienia_sprzedazy,Data_zaplaty_sprzedazy,Typ_dokumentu_sprzedazy,
+        Wartosc_netto_sprzedazy,Kwota_vat_sprzedazy,Wartosc_brutto_sprzedazy,
+        Status_platnosci_sprzedazy,
+        Metoda_platnosci_sprzedazy ) <font color='#0000ff'>VALUES</font>
+        ( @var_wydanie_id,@p_kontrahent_id,
+        <font color='#ff0000'>''</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,YEAR(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,MONTH(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,DAY(getdate()))+<font color='#ff0000'>'/'</font>+<font color='#0000ff'>CONVERT</font>(<font color='#0000ff'>VARCHAR</font>,@var_wydanie_id)+<font color='#ff0000'>''</font>,
+        getdate(),getdate(),<font color='#ff0000'>'F'</font>,
+        @var_kwota_brutto_suma/(1+23.0/100),23,@var_kwota_brutto_suma,
+        <font color='#ff0000'>'O'</font>,<font color='#ff0000'>'G'</font> ) 
+      <font color='#0000ff'>IF</font> @p_typ_dokumentu <> <font color='#ff0000'>'F'</font> <font color='#0000ff'>AND</font> @p_typ_dokumentu <> <font color='#ff0000'>'P'</font>
+        <font color='#0000ff'>ROLLBACK</font> transaction wydanie_produktu_trans
+      <font color='#0000ff'>RAISERROR</font> 23012 <font color='#ff0000'>'Nieprawidlowy typ dokumentu'</font>
+    <font color='#0000ff'>END</font>
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="rs_systabgroup.rs_get_lastcommit" id="procAnchor">rs_systabgroup.rs_get_lastcommit</a>
+</h3>
+<dl class="changes"></dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> rs_systabgroup.rs_get_lastcommit()
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>SELECT</font> origin,origin_qid,secondary_qid
+    <font color='#0000ff'>FROM</font> rs_systabgroup.rs_lastcommit
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="rs_systabgroup.rs_initialize_threads" id="procAnchor">rs_systabgroup.rs_initialize_threads</a>
+</h3>
+<dl class="changes">
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#rs_threads.ta">rs_threads</a></code>&nbsp;
+				</dd>
+<dt>Deletes from:</dt>
+<dd>
+<code><a target="detail" href="detail.html#rs_threads.ta">rs_threads</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> rs_systabgroup.rs_initialize_threads( <font color='#0000ff'>IN</font> @rs_id <font color='#0000ff'>INTEGER</font> ) 
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>DELETE</font> <font color='#0000ff'>FROM</font> rs_systabgroup.rs_threads <font color='#0000ff'>WHERE</font> id = @rs_id;
+  <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> rs_systabgroup.rs_threads <font color='#0000ff'>VALUES</font>( @rs_id,0 ) 
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="rs_systabgroup.rs_marker" id="procAnchor">rs_systabgroup.rs_marker</a>
+</h3>
+<dl class="changes"></dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> rs_systabgroup.rs_marker( <font color='#0000ff'>INOUT</font> @rs_api <font color='#0000ff'>VARCHAR</font>(255) ) 
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>SET</font> @rs_api = @rs_api
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="rs_systabgroup.rs_update_lastcommit" id="procAnchor">rs_systabgroup.rs_update_lastcommit</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#rs_lastcommit.ta">rs_lastcommit</a></code>&nbsp;
+				</dd>
+<dt>Inserts into:</dt>
+<dd>
+<code><a target="detail" href="detail.html#rs_lastcommit.ta">rs_lastcommit</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> rs_systabgroup.rs_update_lastcommit( 
+  <font color='#0000ff'>IN</font> @origin <font color='#0000ff'>INTEGER</font>,
+  <font color='#0000ff'>IN</font> @origin_qid <font color='#0000ff'>BINARY</font>(36),
+  <font color='#0000ff'>IN</font> @secondary_qid <font color='#0000ff'>BINARY</font>(36),
+  <font color='#0000ff'>IN</font> @origin_time datetime ) 
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>UPDATE</font> rs_systabgroup.rs_lastcommit
+    <font color='#0000ff'>SET</font> origin_qid = @origin_qid,
+    secondary_qid = @secondary_qid,
+    origin_time = @origin_time,
+    commit_time = getdate()
+    <font color='#0000ff'>WHERE</font> origin = @origin;
+  <font color='#0000ff'>IF</font>(@@rowcount = 0) <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>INSERT</font> <font color='#0000ff'>INTO</font> rs_systabgroup.rs_lastcommit( origin,origin_qid,secondary_qid,
+      origin_time,commit_time ) <font color='#0000ff'>VALUES</font>
+      ( @origin,@origin_qid,@secondary_qid,
+      @origin_time,getdate() ) 
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="procedure">
+<a name="rs_systabgroup.rs_update_threads" id="procAnchor">rs_systabgroup.rs_update_threads</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#rs_threads.ta">rs_threads</a></code>&nbsp;
+				</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>PROCEDURE</font> rs_systabgroup.rs_update_threads( <font color='#0000ff'>IN</font> @rs_id <font color='#0000ff'>INTEGER</font>,<font color='#0000ff'>IN</font> @rs_seq <font color='#0000ff'>INTEGER</font> ) 
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>UPDATE</font> rs_systabgroup.rs_threads <font color='#0000ff'>SET</font> seq = @rs_seq <font color='#0000ff'>WHERE</font> id = @rs_id
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_przyjecie_dostawy.tr" id="suffixAnchor">DBA.t_przyjecie_dostawy</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Model_zegarka.ta">DBA.Model_zegarka</a></code>&nbsp;
+			    </dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_przyjecie_dostawy <font color='#0000ff'>AFTER</font> <font color='#0000ff'>INSERT</font> <font color='#0000ff'>ORDER</font> 1 <font color='#0000ff'>ON</font>
+DBA.Pozycja_przyjecia
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>NEW</font> <font color='#0000ff'>AS</font> nowa_pozycja_przyjecia
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font> <font color='#00b200'>/* WHEN( search_condition ) */</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>IF</font> nowa_pozycja_przyjecia.Ilosc_towaru_przyjecia > 0 <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>UPDATE</font> Model_zegarka
+      <font color='#0000ff'>SET</font> Model_zegarka.Ilosc_towaru_na_stanie = Model_zegarka.Ilosc_towaru_na_stanie+nowa_pozycja_przyjecia.Ilosc_towaru_przyjecia
+      <font color='#0000ff'>WHERE</font> nowa_pozycja_przyjecia.Kod_zegarka = Model_zegarka.Kod_zegarka
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_sprawdz_poprawnosc_realizacji_zamowienia.tr" id="suffixAnchor">DBA.t_sprawdz_poprawnosc_realizacji_zamowienia</a>
+</h3>
+<dl class="changes"></dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_sprawdz_poprawnosc_realizacji_zamowienia <font color='#0000ff'>BEFORE</font> <font color='#0000ff'>UPDATE</font> <font color='#0000ff'>ORDER</font> 1 <font color='#0000ff'>ON</font>
+DBA.Pozycja_zamowienia
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>NEW</font> <font color='#0000ff'>AS</font> ref_przypisany_zegarek_zamowienie
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>IF</font> <font color='#0000ff'>EXISTS</font>
+    (<font color='#0000ff'>SELECT</font> 1
+      <font color='#0000ff'>FROM</font> Pozycja_zamowienia
+      <font color='#0000ff'>WHERE</font> Kod_zegarka = ref_przypisany_zegarek_zamowienie.Zeg_Kod_zegarka
+      <font color='#0000ff'>AND</font> Numer_seryjny_zegarka = ref_przypisany_zegarek_zamowienie.Numer_seryjny_zegarka) <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>RAISERROR</font> 23001 <font color='#ff0000'>'Zegarek nie jest juz dostepny'</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+  <font color='#0000ff'>IF</font> <font color='#0000ff'>EXISTS</font>
+    (<font color='#0000ff'>SELECT</font> 1
+      <font color='#0000ff'>FROM</font> Zegarek
+      <font color='#0000ff'>WHERE</font> Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font>
+      <font color='#0000ff'>AND</font> Kod_zegarka = ref_przypisany_zegarek_zamowienie.Zeg_Kod_zegarka
+      <font color='#0000ff'>AND</font> Numer_seryjny_zegarka = ref_przypisany_zegarek_zamowienie.Numer_seryjny_zegarka) <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>RAISERROR</font> 23002 <font color='#ff0000'>'Zegarek nie jest juz dostepny'</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+  <font color='#0000ff'>IF</font> ref_przypisany_zegarek_zamowienie.Zeg_Kod_zegarka <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>RAISERROR</font> 23003 <font color='#ff0000'>'Kod zegarka nie może być NULL.'</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>;
+  <font color='#0000ff'>IF</font> ref_przypisany_zegarek_zamowienie.Numer_seryjny_zegarka <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font>
+    <font color='#0000ff'>RAISERROR</font> 23004 <font color='#ff0000'>'Numer seryjny zegarka nie może być NULL.'</font>
+  <font color='#0000ff'>END</font> <font color='#0000ff'>IF</font>
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_wydanie_produktu_sklep_2.tr" id="suffixAnchor">DBA.t_wydanie_produktu_sklep_2</a>
+</h3>
+<dl class="changes"></dl>
+<dl class="references">
+<dt>This Trigger Calls:</dt>
+<dd>
+<code>LEN</code>&nbsp;
+			<code>CHARINDEX</code>&nbsp;
+			</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_wydanie_produktu_sklep_2 <font color='#0000ff'>INSTEAD</font> <font color='#0000ff'>OF</font> <font color='#0000ff'>DELETE</font> <font color='#0000ff'>ON</font>
+DBA.v_oferta_sklep_2
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>OLD</font> <font color='#0000ff'>AS</font> ref_wydany_zegarek
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>SELECT</font> "LEFT"(Model,CHARINDEX(<font color='#ff0000'>' '</font>,Model)-1) <font color='#0000ff'>AS</font> v_Marka_zegarka,
+    "RIGHT"(Model,LEN(Model)-CHARINDEX(<font color='#ff0000'>' '</font>,Model)) <font color='#0000ff'>AS</font> v_Model_zegarka
+    <font color='#0000ff'>FROM</font> v_oferta_sklep_2;
+  <font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> v_kod_zegarka
+    <font color='#0000ff'>FROM</font> Model_zegarka
+    <font color='#0000ff'>WHERE</font> Model_zegarka.Marka_zegarka = v_Marka_zegarka
+    <font color='#0000ff'>AND</font> Model_zegarka.Model_zegarka = v_Marka_zegarka
+<font color='#0000ff'>END</font> <font color='#00b200'>--tak samo dla sklep 3 i 4
+</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_wydanie_produktu_sklep_3.tr" id="suffixAnchor">DBA.t_wydanie_produktu_sklep_3</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Zegarek.ta">DBA.Zegarek</a></code>&nbsp;
+			    </dd>
+</dl>
+<dl class="references">
+<dt>This Trigger Calls:</dt>
+<dd>
+<code>LEN</code>&nbsp;
+			<code>CHARINDEX</code>&nbsp;
+			</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_wydanie_produktu_sklep_3 <font color='#0000ff'>INSTEAD</font> <font color='#0000ff'>OF</font> <font color='#0000ff'>DELETE</font> <font color='#0000ff'>ON</font>
+DBA.v_oferta_sklep_3
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>OLD</font> <font color='#0000ff'>AS</font> ref_wydany_zegarek
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>SELECT</font> "LEFT"(Model,CHARINDEX(<font color='#ff0000'>' '</font>,Model)-1) <font color='#0000ff'>AS</font> v_Marka_zegarka,
+    "RIGHT"(Model,LEN(Model)-CHARINDEX(<font color='#ff0000'>' '</font>,Model)) <font color='#0000ff'>AS</font> v_Model_zegarka
+    <font color='#0000ff'>FROM</font> v_oferta_sklep_3;
+  <font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> v_kod_zegarka
+    <font color='#0000ff'>FROM</font> Model_zegarka
+    <font color='#0000ff'>WHERE</font> Model_zegarka.Marka_zegarka = v_Marka_zegarka
+    <font color='#0000ff'>AND</font> Model_zegarka.Model_zegarka = v_Marka_zegarka;
+  <font color='#0000ff'>UPDATE</font> Zegarek
+    <font color='#0000ff'>SET</font> Zegarek.Id_wydania = ref_wydany_zegarek.Id_wydania
+    <font color='#0000ff'>WHERE</font> Zegarek.Kod_zegarka = v_kod_zegarka
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_wydanie_produktu_sklep_4.tr" id="suffixAnchor">DBA.t_wydanie_produktu_sklep_4</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Zegarek.ta">DBA.Zegarek</a></code>&nbsp;
+			    </dd>
+</dl>
+<dl class="references">
+<dt>This Trigger Calls:</dt>
+<dd>
+<code>LEN</code>&nbsp;
+			<code>CHARINDEX</code>&nbsp;
+			</dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_wydanie_produktu_sklep_4 <font color='#0000ff'>INSTEAD</font> <font color='#0000ff'>OF</font> <font color='#0000ff'>DELETE</font> <font color='#0000ff'>ON</font>
+DBA.v_oferta_sklep_4
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>OLD</font> <font color='#0000ff'>AS</font> ref_wydany_zegarek
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>SELECT</font> "LEFT"(Model,CHARINDEX(<font color='#ff0000'>' '</font>,Model)-1) <font color='#0000ff'>AS</font> v_Marka_zegarka,
+    "RIGHT"(Model,LEN(Model)-CHARINDEX(<font color='#ff0000'>' '</font>,Model)) <font color='#0000ff'>AS</font> v_Model_zegarka
+    <font color='#0000ff'>FROM</font> v_oferta_sklep_4;
+  <font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> v_kod_zegarka
+    <font color='#0000ff'>FROM</font> Model_zegarka
+    <font color='#0000ff'>WHERE</font> Model_zegarka.Marka_zegarka = v_Marka_zegarka
+    <font color='#0000ff'>AND</font> Model_zegarka.Model_zegarka = v_Marka_zegarka;
+  <font color='#0000ff'>UPDATE</font> Zegarek
+    <font color='#0000ff'>SET</font> Zegarek.Id_wydania = ref_wydany_zegarek.Id_wydania
+    <font color='#0000ff'>WHERE</font> Zegarek.Kod_zegarka = v_kod_zegarka
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="trigger">
+<a name="DBA.t_zgloszenie_wydania_produktu.tr" id="suffixAnchor">DBA.t_zgloszenie_wydania_produktu</a>
+</h3>
+<dl class="changes">
+<dt>Updates:</dt>
+<dd>
+<code><a target="detail" href="detail.html#DBA.Model_zegarka.ta">DBA.Model_zegarka</a></code>&nbsp;
+			    </dd>
+</dl>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>TRIGGER</font> t_zgloszenie_wydania_produktu <font color='#0000ff'>AFTER</font> <font color='#0000ff'>UPDATE</font> <font color='#0000ff'>ORDER</font> 1 <font color='#0000ff'>ON</font>
+DBA.Zegarek
+<font color='#0000ff'>REFERENCING</font> <font color='#0000ff'>OLD</font> <font color='#0000ff'>AS</font> ref_wydany_zegarek
+<font color='#0000ff'>FOR</font> <font color='#0000ff'>EACH</font> <font color='#0000ff'>ROW</font>
+<font color='#0000ff'>BEGIN</font>
+  <font color='#0000ff'>UPDATE</font> Model_zegarka
+    <font color='#0000ff'>SET</font> Model_zegarka.Ilosc_towaru_na_stanie = (Model_zegarka.Ilosc_towaru_na_stanie-1)
+    <font color='#0000ff'>WHERE</font> Model_zegarka.Kod_zegarka = ref_wydany_zegarek.Kod_zegarka
+<font color='#0000ff'>END</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="view">
+<a name="DBA.v_oferta_sklep_2.vi" id="suffixAnchor">DBA.v_oferta_sklep_2</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Model</td><td class="columnType" nowrap="1">varchar(201)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Numer_Seryjny</td><td class="columnType" nowrap="1">char(12)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_bez_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_po_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Okres_gwarancji</td><td class="columnType" nowrap="1">date</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Kategoria</td><td class="columnType" nowrap="1">varchar(2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Mechanizm</td><td class="columnType" nowrap="1">char(1)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Material_Koperty</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Rozmiar_koperty</td><td class="columnType" nowrap="1">decimal(2, 0)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Pasek</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Wodoodpornosc</td><td class="columnType" nowrap="1">smallint</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Certyfikat</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+</table>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>VIEW</font> DBA.v_oferta_sklep_2
+  <font color='#0000ff'>AS</font> <font color='#0000ff'>SELECT</font> Model_zegarka.Marka_zegarka+<font color='#ff0000'>' '</font>+Model_zegarka.Model_zegarka <font color='#0000ff'>AS</font> Model,
+    Zegarek.Numer_seryjny_zegarka <font color='#0000ff'>AS</font> Numer_Seryjny,
+    Model_zegarka.Cena_brutto_zegarka <font color='#0000ff'>AS</font> Cena_bez_promocji,
+    <font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Zeg_Prom.Prom_Sum <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> Model_zegarka.Cena_brutto_zegarka
+    <font color='#0000ff'>ELSE</font> <font color='#0000ff'>CAST</font>(Model_zegarka.Cena_brutto_zegarka-Model_zegarka.Cena_brutto_zegarka*(Zeg_Prom.Prom_Sum) <font color='#0000ff'>AS</font> <font color='#0000ff'>DECIMAL</font>(10,2))
+    <font color='#0000ff'>END</font> <font color='#0000ff'>AS</font> Cena_po_promocji,
+    <font color='#0000ff'>CAST</font>(DATEADD(year,2,GETDATE()) <font color='#0000ff'>AS</font> <font color='#0000ff'>DATE</font>) <font color='#0000ff'>AS</font> Okres_gwarancji,
+    Model_zegarka.Kategoria_zegarka <font color='#0000ff'>AS</font> Kategoria,
+    Model_zegarka.Mechanizm_zegarka <font color='#0000ff'>AS</font> Mechanizm,
+    Model_zegarka.Material_koperty_zegarka <font color='#0000ff'>AS</font> Material_Koperty,
+    Model_zegarka.Rozmiar_koperty_zegarka <font color='#0000ff'>AS</font> Rozmiar_koperty,
+    Model_zegarka.Pasek_zegarka <font color='#0000ff'>AS</font> Pasek,
+    Model_zegarka.Wodoodpornosc_zegarka <font color='#0000ff'>AS</font> Wodoodpornosc,
+    Zegarek.Certyfikat_zegarka <font color='#0000ff'>AS</font> Certyfikat,
+    Zegarek.Id_wydania
+    <font color='#0000ff'>FROM</font> DBA.Zegarek
+      <font color='#0000ff'>JOIN</font> DBA.Model_zegarka <font color='#0000ff'>ON</font> Zegarek.Kod_zegarka = Model_zegarka.Kod_zegarka
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> Kod_zegarka2,
+        sum(Promocja.Procent_znizki)/100 <font color='#0000ff'>AS</font> Prom_Sum
+        <font color='#0000ff'>FROM</font> DBA.Model_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja_modelu_zegarka <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Promocja_modelu_zegarka.Kod_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja <font color='#0000ff'>ON</font> Promocja_modelu_zegarka.Id_promocji = Promocja.Id_promocji
+        <font color='#0000ff'>WHERE</font> getdate() <font color='#0000ff'>BETWEEN</font> Promocja.Data_rozpoczecia_promocji <font color='#0000ff'>AND</font> Promocja.Data_zakonczenia_promocji
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Model_zegarka.Kod_zegarka) <font color='#0000ff'>AS</font> Zeg_Prom( Kod_zegarka2,Prom_Sum ) 
+      <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Zeg_Prom.Kod_zegarka2
+    <font color='#0000ff'>WHERE</font> Zegarek.Mag = 2
+    <font color='#0000ff'>AND</font> Zegarek.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="view">
+<a name="DBA.v_oferta_sklep_3.vi" id="suffixAnchor">DBA.v_oferta_sklep_3</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Model</td><td class="columnType" nowrap="1">varchar(201)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Numer_Seryjny</td><td class="columnType" nowrap="1">char(12)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_bez_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_po_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Okres_gwarancji</td><td class="columnType" nowrap="1">date</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Kategoria</td><td class="columnType" nowrap="1">varchar(2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Mechanizm</td><td class="columnType" nowrap="1">char(1)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Material_Koperty</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Rozmiar_koperty</td><td class="columnType" nowrap="1">decimal(2, 0)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Pasek</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Wodoodpornosc</td><td class="columnType" nowrap="1">smallint</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Certyfikat</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+</table>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>VIEW</font> DBA.v_oferta_sklep_3
+  <font color='#0000ff'>AS</font> <font color='#0000ff'>SELECT</font> Model_zegarka.Marka_zegarka+<font color='#ff0000'>' '</font>+Model_zegarka.Model_zegarka <font color='#0000ff'>AS</font> Model,
+    Zegarek.Numer_seryjny_zegarka <font color='#0000ff'>AS</font> Numer_Seryjny,
+    Model_zegarka.Cena_brutto_zegarka <font color='#0000ff'>AS</font> Cena_bez_promocji,
+    <font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Zeg_Prom.Prom_Sum <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> Model_zegarka.Cena_brutto_zegarka
+    <font color='#0000ff'>ELSE</font> <font color='#0000ff'>CAST</font>(Model_zegarka.Cena_brutto_zegarka-Model_zegarka.Cena_brutto_zegarka*(Zeg_Prom.Prom_Sum) <font color='#0000ff'>AS</font> <font color='#0000ff'>DECIMAL</font>(10,2))
+    <font color='#0000ff'>END</font> <font color='#0000ff'>AS</font> Cena_po_promocji,
+    <font color='#0000ff'>CAST</font>(DATEADD(year,2,GETDATE()) <font color='#0000ff'>AS</font> <font color='#0000ff'>DATE</font>) <font color='#0000ff'>AS</font> Okres_gwarancji,
+    Model_zegarka.Kategoria_zegarka <font color='#0000ff'>AS</font> Kategoria,
+    Model_zegarka.Mechanizm_zegarka <font color='#0000ff'>AS</font> Mechanizm,
+    Model_zegarka.Material_koperty_zegarka <font color='#0000ff'>AS</font> Material_Koperty,
+    Model_zegarka.Rozmiar_koperty_zegarka <font color='#0000ff'>AS</font> Rozmiar_koperty,
+    Model_zegarka.Pasek_zegarka <font color='#0000ff'>AS</font> Pasek,
+    Model_zegarka.Wodoodpornosc_zegarka <font color='#0000ff'>AS</font> Wodoodpornosc,
+    Zegarek.Certyfikat_zegarka <font color='#0000ff'>AS</font> Certyfikat,
+    Zegarek.Id_wydania
+    <font color='#0000ff'>FROM</font> DBA.Zegarek
+      <font color='#0000ff'>JOIN</font> DBA.Model_zegarka <font color='#0000ff'>ON</font> Zegarek.Kod_zegarka = Model_zegarka.Kod_zegarka
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> Kod_zegarka2,
+        sum(Promocja.Procent_znizki)/100 <font color='#0000ff'>AS</font> Prom_Sum
+        <font color='#0000ff'>FROM</font> DBA.Model_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja_modelu_zegarka <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Promocja_modelu_zegarka.Kod_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja <font color='#0000ff'>ON</font> Promocja_modelu_zegarka.Id_promocji = Promocja.Id_promocji
+        <font color='#0000ff'>WHERE</font> getdate() <font color='#0000ff'>BETWEEN</font> Promocja.Data_rozpoczecia_promocji <font color='#0000ff'>AND</font> Promocja.Data_zakonczenia_promocji
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Model_zegarka.Kod_zegarka) <font color='#0000ff'>AS</font> Zeg_Prom( Kod_zegarka2,Prom_Sum ) 
+      <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Zeg_Prom.Kod_zegarka2
+    <font color='#0000ff'>WHERE</font> Zegarek.Mag = 3
+    <font color='#0000ff'>AND</font> Zegarek.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="view">
+<a name="DBA.v_oferta_sklep_4.vi" id="suffixAnchor">DBA.v_oferta_sklep_4</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Model</td><td class="columnType" nowrap="1">varchar(201)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Numer_Seryjny</td><td class="columnType" nowrap="1">char(12)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_bez_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Cena_po_promocji</td><td class="columnType" nowrap="1">decimal(10, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Okres_gwarancji</td><td class="columnType" nowrap="1">date</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Kategoria</td><td class="columnType" nowrap="1">varchar(2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Mechanizm</td><td class="columnType" nowrap="1">char(1)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Material_Koperty</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Rozmiar_koperty</td><td class="columnType" nowrap="1">decimal(2, 0)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Pasek</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Wodoodpornosc</td><td class="columnType" nowrap="1">smallint</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Certyfikat</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Id_wydania</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+</table>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>VIEW</font> DBA.v_oferta_sklep_4
+  <font color='#0000ff'>AS</font> <font color='#0000ff'>SELECT</font> Model_zegarka.Marka_zegarka+<font color='#ff0000'>' '</font>+Model_zegarka.Model_zegarka <font color='#0000ff'>AS</font> Model,
+    Zegarek.Numer_seryjny_zegarka <font color='#0000ff'>AS</font> Numer_Seryjny,
+    Model_zegarka.Cena_brutto_zegarka <font color='#0000ff'>AS</font> Cena_bez_promocji,
+    <font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Zeg_Prom.Prom_Sum <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> Model_zegarka.Cena_brutto_zegarka
+    <font color='#0000ff'>ELSE</font> <font color='#0000ff'>CAST</font>(Model_zegarka.Cena_brutto_zegarka-Model_zegarka.Cena_brutto_zegarka*(Zeg_Prom.Prom_Sum) <font color='#0000ff'>AS</font> <font color='#0000ff'>DECIMAL</font>(10,2))
+    <font color='#0000ff'>END</font> <font color='#0000ff'>AS</font> Cena_po_promocji,
+    <font color='#0000ff'>CAST</font>(DATEADD(year,2,GETDATE()) <font color='#0000ff'>AS</font> <font color='#0000ff'>DATE</font>) <font color='#0000ff'>AS</font> Okres_gwarancji,
+    Model_zegarka.Kategoria_zegarka <font color='#0000ff'>AS</font> Kategoria,
+    Model_zegarka.Mechanizm_zegarka <font color='#0000ff'>AS</font> Mechanizm,
+    Model_zegarka.Material_koperty_zegarka <font color='#0000ff'>AS</font> Material_Koperty,
+    Model_zegarka.Rozmiar_koperty_zegarka <font color='#0000ff'>AS</font> Rozmiar_koperty,
+    Model_zegarka.Pasek_zegarka <font color='#0000ff'>AS</font> Pasek,
+    Model_zegarka.Wodoodpornosc_zegarka <font color='#0000ff'>AS</font> Wodoodpornosc,
+    Zegarek.Certyfikat_zegarka <font color='#0000ff'>AS</font> Certyfikat,
+    Zegarek.Id_wydania
+    <font color='#0000ff'>FROM</font> DBA.Zegarek
+      <font color='#0000ff'>JOIN</font> DBA.Model_zegarka <font color='#0000ff'>ON</font> Zegarek.Kod_zegarka = Model_zegarka.Kod_zegarka
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Model_zegarka.Kod_zegarka <font color='#0000ff'>AS</font> Kod_zegarka2,
+        sum(Promocja.Procent_znizki)/100 <font color='#0000ff'>AS</font> Prom_Sum
+        <font color='#0000ff'>FROM</font> DBA.Model_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja_modelu_zegarka <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Promocja_modelu_zegarka.Kod_zegarka
+          <font color='#0000ff'>JOIN</font> DBA.Promocja <font color='#0000ff'>ON</font> Promocja_modelu_zegarka.Id_promocji = Promocja.Id_promocji
+        <font color='#0000ff'>WHERE</font> getdate() <font color='#0000ff'>BETWEEN</font> Promocja.Data_rozpoczecia_promocji <font color='#0000ff'>AND</font> Promocja.Data_zakonczenia_promocji
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Model_zegarka.Kod_zegarka) <font color='#0000ff'>AS</font> Zeg_Prom( Kod_zegarka2,Prom_Sum ) 
+      <font color='#0000ff'>ON</font> Model_zegarka.Kod_zegarka = Zeg_Prom.Kod_zegarka2
+    <font color='#0000ff'>WHERE</font> Zegarek.Mag = 4
+    <font color='#0000ff'>AND</font> Zegarek.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font>
+</pre>
+</div>
+<div class="island">
+<h3 class="view">
+<a name="DBA.v_zamowienia_niezrealizowane.vi" id="suffixAnchor">DBA.v_zamowienia_niezrealizowane</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Id_zamowienia</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Wartosc_zamowienia</td><td class="columnType" nowrap="1">numeric(18, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Imie</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Nazwisko</td><td class="columnType" nowrap="1">varchar(30)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Mag</td><td class="columnType" nowrap="1">smallint</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Miasto</td><td class="columnType" nowrap="1">varchar(20)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Poczta</td><td class="columnType" nowrap="1">char(6)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Ulica</td><td class="columnType" nowrap="1">varchar(30)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Numer_lokalu</td><td class="columnType" nowrap="1">char(3)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Status_zamowienia</td><td class="columnType" nowrap="1">varchar(1)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Pozycje_niezaopiekowane</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Data_zamowienia</td><td class="columnType" nowrap="1">date</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Priorytet</td><td class="columnType" nowrap="1">varchar(27)</td><td></td>
+</tr>
+</table>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>VIEW</font> DBA.v_zamowienia_niezrealizowane
+  <font color='#0000ff'>AS</font> <font color='#0000ff'>SELECT</font> Zamowienie.Id_zamowienia,
+    Poz_zam.Wart_zam_sum <font color='#0000ff'>AS</font> Wartosc_zamowienia,
+    Osoba.Imie,
+    Osoba.Nazwisko,
+    Lokalizacja.Mag,
+    Lokalizacja.Miasto,
+    Lokalizacja.Poczta,
+    Lokalizacja.Ulica,
+    Lokalizacja.Numer_lokalu,
+    Zamowienie.Status_zamowienia,
+    Poz_zam.Poz_zam_liczba <font color='#0000ff'>AS</font> Pozycje_niezaopiekowane,
+    Zamowienie.Data_zamowienia,
+    <font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> getdate() > <font color='#0000ff'>CAST</font>(DATEADD(day,5,Zamowienie.Data_zamowienia) <font color='#0000ff'>AS</font> <font color='#0000ff'>DATE</font>) <font color='#0000ff'>THEN</font>
+      <font color='#0000ff'>CAST</font>(DATEDIFF(day,DATEADD(day,5,Zamowienie.Data_zamowienia),getdate()) <font color='#0000ff'>AS</font> <font color='#0000ff'>VARCHAR</font>)+<font color='#ff0000'>' dni po terminie'</font>
+    <font color='#0000ff'>ELSE</font> <font color='#0000ff'>CAST</font>(DATEDIFF(day,getdate(),DATEADD(day,5,Zamowienie.Data_zamowienia)) <font color='#0000ff'>AS</font> <font color='#0000ff'>VARCHAR</font>)+<font color='#ff0000'>' dni do terminu'</font>
+    <font color='#0000ff'>END</font> <font color='#0000ff'>AS</font> Priorytet
+    <font color='#0000ff'>FROM</font> DBA.zamowienie
+      <font color='#0000ff'>JOIN</font> DBA.Osoba <font color='#0000ff'>ON</font> Zamowienie.Id_zamawiajacego = Osoba.Id_osoby
+      <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Pozycja_zamowienia.Id_zamowienia <font color='#0000ff'>AS</font> Id_zamowienia2,
+        SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Pozycja_zamowienia.Numer_seryjny_zegarka <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Poz_zam_liczba,
+        SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Model_zegarka.Cena_brutto_zegarka <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> Model_zegarka.Cena_brutto_zegarka <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Wart_zam_sum
+        <font color='#0000ff'>FROM</font> DBA.Pozycja_zamowienia
+          <font color='#0000ff'>JOIN</font> DBA.Model_zegarka <font color='#0000ff'>ON</font> Pozycja_zamowienia.Kod_zegarka = Model_zegarka.Kod_zegarka
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Pozycja_zamowienia.Id_zamowienia) <font color='#0000ff'>AS</font> Poz_zam( Id_zamowienia2,Poz_zam_liczba,Wart_zam_sum ) 
+      <font color='#0000ff'>ON</font> Zamowienie.Id_zamowienia = Poz_zam.Id_zamowienia2
+      <font color='#0000ff'>JOIN</font> DBA.Lokalizacja <font color='#0000ff'>ON</font> Zamowienie.Mag = Lokalizacja.mag
+</pre>
+</div>
+<div class="island">
+<h3 class="view">
+<a name="DBA.vm_raport_miesieczny.vi" id="suffixAnchor">DBA.vm_raport_miesieczny</a>
+</h3>
+<table class="tableColumnList" cellspacing="0">
+<tr>
+<th nowrap="1">Column Name</th><th nowrap="1">Type</th><th nowrap="1">Comment</th>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Mag</td><td class="columnType" nowrap="1">smallint</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Liczba_transakcji</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Liczba_sprzedanych_zegarkow</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Niewystawione_faktury</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Nieoplacone_faktury</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Suma_wartosci_sprzedazy</td><td class="columnType" nowrap="1">numeric(18, 2)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Pracownik_miesiaca</td><td class="columnType" nowrap="1">varchar(51)</td><td></td>
+</tr>
+<tr>
+<td class="columnName" nowrap="1">Liczba_transakcji_pracownika</td><td class="columnType" nowrap="1">integer</td><td></td>
+</tr>
+</table>
+<h4>Source:</h4>
+<pre><font color='#0000ff'>CREATE</font> <font color='#0000ff'>MATERIALIZED</font> <font color='#0000ff'>VIEW</font> DBA.vm_raport_miesieczny
+  <font color='#0000ff'>AS</font> <font color='#0000ff'>SELECT</font> Lokalizacja.Mag,
+    Sprzedaz_lokalizacji.Liczba_paragonow <font color='#0000ff'>AS</font> Liczba_transakcji,
+    SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Wydanie_zewnetrzne.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Liczba_sprzedanych_zegarkow,
+    FaktLicz.Fakt_Niewyst_liczba <font color='#0000ff'>AS</font> Niewystawione_faktury,
+    FaktLicz2.Fakt_Nieop_liczba <font color='#0000ff'>AS</font> Nieoplacone_faktury,
+    AgregowanaSprzedaz.Wartosc_brutto_sprzedazy_s <font color='#0000ff'>AS</font> Suma_wartosci_sprzedazy,
+    Sprzedaz_pracownika.Pracownik_miesiaca <font color='#0000ff'>AS</font> Pracownik_miesiaca,
+    Sprzedaz_pracownika.Liczba_paragonow <font color='#0000ff'>AS</font> Liczba_transakcji_pracownika
+    <font color='#0000ff'>FROM</font> DBA.Wydanie_zewnetrzne
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font> DBA.Zegarek <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_wydania = Zegarek.Id_wydania
+      <font color='#0000ff'>JOIN</font> DBA.Lokalizacja <font color='#0000ff'>ON</font> Zegarek.Mag = Lokalizacja.Mag
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Lokalizacja.Mag <font color='#0000ff'>AS</font> Mag2,
+        (SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Wydanie_zewnetrzne.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>)
+        -SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Dokument_sprzedazy.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>)) <font color='#0000ff'>AS</font> Fakt_Niewyst_liczba
+        <font color='#0000ff'>FROM</font> DBA.Wydanie_zewnetrzne
+          <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font> DBA.Dokument_sprzedazy <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_wydania = Dokument_sprzedazy.Id_wydania
+          <font color='#0000ff'>JOIN</font> DBA.Pracownik <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_pracownika = Pracownik.Id_pracownika
+          <font color='#0000ff'>JOIN</font> DBA.Lokalizacja <font color='#0000ff'>ON</font> Pracownik.Mag = Lokalizacja.Mag
+        <font color='#0000ff'>WHERE</font> Lokalizacja.Mag <> 1
+        <font color='#0000ff'>AND</font> DATEDIFF(day,Wydanie_zewnetrzne.Data_wystawienia_wydania,GETDATE()) <= 30
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Lokalizacja.Mag) <font color='#0000ff'>AS</font> FaktLicz( Mag2,Fakt_Niewyst_liczba ) 
+      <font color='#0000ff'>ON</font> Lokalizacja.Mag = FaktLicz.Mag2
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Lokalizacja.Mag <font color='#0000ff'>AS</font> Mag2,
+        SUM(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Dokument_sprzedazy.Data_zaplaty_sprzedazy <font color='#0000ff'>IS</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> 0 <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Fakt_Nieop_liczba
+        <font color='#0000ff'>FROM</font> DBA.Dokument_sprzedazy
+          <font color='#0000ff'>JOIN</font> DBA.Wydanie_zewnetrzne <font color='#0000ff'>ON</font> Dokument_sprzedazy.Id_wydania = Wydanie_zewnetrzne.Id_wydania
+          <font color='#0000ff'>JOIN</font> DBA.Pracownik <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_pracownika = Pracownik.Id_pracownika
+          <font color='#0000ff'>JOIN</font> DBA.Lokalizacja <font color='#0000ff'>ON</font> Pracownik.Mag = Lokalizacja.Mag
+        <font color='#0000ff'>WHERE</font> Lokalizacja.Mag <> 1
+        <font color='#0000ff'>AND</font> DATEDIFF(day,Wydanie_zewnetrzne.Data_wystawienia_wydania,GETDATE()) <= 30
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Lokalizacja.Mag) <font color='#0000ff'>AS</font> FaktLicz2( Mag2,Fakt_Nieop_liczba ) 
+      <font color='#0000ff'>ON</font> Lokalizacja.Mag = FaktLicz2.Mag2
+      <font color='#0000ff'>LEFT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Pracownik.mag <font color='#0000ff'>AS</font> Lokal,
+        SUM(COALESCE(Dokument_sprzedazy.Wartosc_brutto_sprzedazy,0)) <font color='#0000ff'>AS</font> Wartosc_brutto_sprzedazy_s
+        <font color='#0000ff'>FROM</font> DBA.Wydanie_zewnetrzne
+          <font color='#0000ff'>RIGHT</font> <font color='#0000ff'>OUTER</font> <font color='#0000ff'>JOIN</font> DBA.Dokument_sprzedazy <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_wydania = Dokument_sprzedazy.Id_wydania
+          <font color='#0000ff'>JOIN</font> DBA.Pracownik <font color='#0000ff'>ON</font> Wydanie_zewnetrzne.Id_pracownika = Pracownik.Id_pracownika
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Pracownik.mag) <font color='#0000ff'>AS</font> AgregowanaSprzedaz( Lokal,Wartosc_brutto_sprzedazy_s ) 
+      <font color='#0000ff'>ON</font> Lokalizacja.Mag = AgregowanaSprzedaz.Lokal
+      <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Osoba.Imie+<font color='#ff0000'>' '</font>+Osoba.Nazwisko <font color='#0000ff'>AS</font> Pracownik_miesiaca,
+        Lokalizacja.Mag <font color='#0000ff'>AS</font> Mag2,
+        COUNT(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Wydanie_zewnetrzne.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Liczba_paragonow,
+        ROW_NUMBER() <font color='#0000ff'>OVER</font>(partition <font color='#0000ff'>BY</font> Lokalizacja.Mag <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> COUNT(Wydanie_zewnetrzne.Id_wydania) <font color='#0000ff'>DESC</font>) <font color='#0000ff'>AS</font> RowNum
+        <font color='#0000ff'>FROM</font> DBA.Lokalizacja
+          <font color='#0000ff'>JOIN</font> DBA.Pracownik <font color='#0000ff'>ON</font> Lokalizacja.Mag = Pracownik.Mag
+          <font color='#0000ff'>JOIN</font> DBA.Osoba <font color='#0000ff'>ON</font> Pracownik.Id_pracownika_dane = Osoba.Id_osoby
+          <font color='#0000ff'>JOIN</font> DBA.Wydanie_zewnetrzne <font color='#0000ff'>ON</font> Pracownik.Id_pracownika = Wydanie_zewnetrzne.Id_pracownika
+        <font color='#0000ff'>WHERE</font> Lokalizacja.Mag <> 1
+        <font color='#0000ff'>AND</font> DATEDIFF(day,Wydanie_zewnetrzne.Data_wystawienia_wydania,GETDATE()) <= 30
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Osoba.Imie,Osoba.Nazwisko,Lokalizacja.Mag) <font color='#0000ff'>AS</font> Sprzedaz_pracownika( Pracownik_miesiaca,Mag2,Liczba_paragonow,RowNum ) 
+      <font color='#0000ff'>ON</font> Lokalizacja.Mag = Sprzedaz_pracownika.Mag2
+      <font color='#0000ff'>JOIN</font>(<font color='#0000ff'>SELECT</font> Lokalizacja.Mag <font color='#0000ff'>AS</font> Mag2,
+        COUNT(<font color='#0000ff'>CASE</font> <font color='#0000ff'>WHEN</font> Wydanie_zewnetrzne.Id_wydania <font color='#0000ff'>IS</font> <font color='#0000ff'>NOT</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>THEN</font> 1 <font color='#0000ff'>ELSE</font> <font color='#0000ff'>NULL</font> <font color='#0000ff'>END</font>) <font color='#0000ff'>AS</font> Liczba_paragonow,
+        ROW_NUMBER() <font color='#0000ff'>OVER</font>(partition <font color='#0000ff'>BY</font> Lokalizacja.Mag <font color='#0000ff'>ORDER</font> <font color='#0000ff'>BY</font> COUNT(Wydanie_zewnetrzne.Id_wydania) <font color='#0000ff'>DESC</font>) <font color='#0000ff'>AS</font> RowNum
+        <font color='#0000ff'>FROM</font> DBA.Lokalizacja
+          <font color='#0000ff'>JOIN</font> DBA.Pracownik <font color='#0000ff'>ON</font> Lokalizacja.Mag = Pracownik.Mag
+          <font color='#0000ff'>JOIN</font> DBA.Wydanie_zewnetrzne <font color='#0000ff'>ON</font> Pracownik.Id_pracownika = Wydanie_zewnetrzne.Id_pracownika
+        <font color='#0000ff'>WHERE</font> Lokalizacja.Mag <> 1
+        <font color='#0000ff'>AND</font> DATEDIFF(day,Wydanie_zewnetrzne.Data_wystawienia_wydania,GETDATE()) <= 30
+        <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Lokalizacja.Mag) <font color='#0000ff'>AS</font> Sprzedaz_lokalizacji( Mag2,Liczba_paragonow,RowNum ) 
+      <font color='#0000ff'>ON</font> Lokalizacja.Mag = Sprzedaz_lokalizacji.Mag2
+    <font color='#0000ff'>WHERE</font> Sprzedaz_pracownika.RowNum = 1
+    <font color='#0000ff'>AND</font> Lokalizacja.Mag <> 1
+    <font color='#0000ff'>AND</font> DATEDIFF(day,Wydanie_zewnetrzne.Data_wystawienia_wydania,GETDATE()) <= 30
+    <font color='#0000ff'>GROUP</font> <font color='#0000ff'>BY</font> Lokalizacja.Mag,
+    Sprzedaz_pracownika.Pracownik_miesiaca,
+    Sprzedaz_pracownika.Liczba_paragonow,
+    Sprzedaz_lokalizacji.Liczba_paragonow,
+    FaktLicz.Fakt_Niewyst_liczba,
+    FaktLicz2.Fakt_Nieop_liczba,
+    AgregowanaSprzedaz.Wartosc_brutto_sprzedazy_s
+</pre>
+</div>
+</body>
+</html>

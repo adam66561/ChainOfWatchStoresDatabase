@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>zegarki</title>
+<script type="text/javascript">
+function expandHandler( layer, tree )
+{
+	var style2;
+	var imgElem;
+	
+	if( document.getElementById ) {
+		// standards-compliant browsers (e.g. firefox) use this
+		style2 = document.getElementById( layer ).style;
+		imgElem = document.getElementById( tree );
+	} else if( document.all ) {
+		// for IE
+		style2 = document.all.layer.style;
+		imgElem = document.all.tree;
+	} else if( document.layers ) {
+		// for old versions of Netscape
+		style2 = document.layers.layer.style;
+		imgElem = document.layers.tree;
+	}
+	
+	if( style2.display == "none" ) {
+		style2.display = "block";
+		imgElem.src = "collapse.png";
+	} else {
+		style2.display = "none";
+		imgElem.src = "expand.png";
+	}
+}
+</script>
+<link rel="stylesheet" type="text/css" href="details.css">
+<style type="text/css">
+a.ownerHeading {
+	color:#193989;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+img.tree {
+	cursor:pointer;
+}
+</style>
+</head>
+<body>
+<h3>Tables</h3>
+<img src="expand.png" onClick="expandHandler('DBAtables', 'DBATree')" class="tree" id="DBATree"><a href="javascript://" onClick="expandHandler('DBAtables', 'DBATree')" class="ownerHeading">
+				&nbsp;DBA</a>
+<div id="DBAtables" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Dokument_sprzedazy.ta">Dokument_sprzedazy</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Dokument_zakupu.ta">Dokument_zakupu</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Kontrahent.ta">Kontrahent</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Lokalizacja.ta">Lokalizacja</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Model_zegarka.ta">Model_zegarka</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Osoba.ta">Osoba</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Pozycja_przyjecia.ta">Pozycja_przyjecia</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Pozycja_zamowienia.ta">Pozycja_zamowienia</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Pracownik.ta">Pracownik</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Promocja.ta">Promocja</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Promocja_modelu_zegarka.ta">Promocja_modelu_zegarka</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Przyjecie_zewnetrzne.ta">Przyjecie_zewnetrzne</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Reklamacja.ta">Reklamacja</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Wydanie_zewnetrzne.ta">Wydanie_zewnetrzne</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Zamowienie.ta">Zamowienie</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.Zegarek.ta">Zegarek</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+<img src="expand.png" onClick="expandHandler('dbotables', 'dboTree')" class="tree" id="dboTree"><a href="javascript://" onClick="expandHandler('dbotables', 'dboTree')" class="ownerHeading">
+				&nbsp;dbo</a>
+<div id="dbotables" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#dbo.maint_plan.ta">maint_plan</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#dbo.maint_plan_report.ta">maint_plan_report</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+<h3>Procedures &amp; Functions</h3>
+<img src="expand.png" onClick="expandHandler('DBAprocs', 'DBATree')" class="tree" id="DBATree"><a href="javascript://" onClick="expandHandler('DBAprocs', 'DBATree')" class="ownerHeading">
+				&nbsp;DBA</a>
+<div id="DBAprocs" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.f_liczba_sprzedanych_zegarkow">f_liczba_sprzedanych_zegarkow</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.f_premia_pracownika">f_premia_pracownika</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.f_ulubiony_zegarek">f_ulubiony_zegarek</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.p_dodaj_zamowienie">p_dodaj_zamowienie</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.p_przyjmij_dostawe">p_przyjmij_dostawe</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.p_wprowadz_fakture_za_przyjecia">p_wprowadz_fakture_za_przyjecia</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.p_wydaj_produkt_klientowi">p_wydaj_produkt_klientowi</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+<img src="expand.png" onClick="expandHandler('rs_systabgroupprocs', 'rs_systabgroupTree')" class="tree" id="rs_systabgroupTree"><a href="javascript://" onClick="expandHandler('rs_systabgroupprocs', 'rs_systabgroupTree')" class="ownerHeading">
+				&nbsp;rs_systabgroup</a>
+<div id="rs_systabgroupprocs" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#rs_systabgroup.rs_get_lastcommit">rs_get_lastcommit</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#rs_systabgroup.rs_initialize_threads">rs_initialize_threads</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#rs_systabgroup.rs_marker">rs_marker</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#rs_systabgroup.rs_update_lastcommit">rs_update_lastcommit</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#rs_systabgroup.rs_update_threads">rs_update_threads</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+<h3>Triggers</h3>
+<img src="expand.png" onClick="expandHandler('DBAtriggers', 'DBATreeTr')" class="tree" id="DBATreeTr"><a href="javascript://" onClick="expandHandler('DBAtriggers', 'DBATreeTr')" class="ownerHeading">
+				&nbsp;DBA</a>
+<div id="DBAtriggers" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_przyjecie_dostawy.tr">t_przyjecie_dostawy</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_sprawdz_poprawnosc_realizacji_zamowienia.tr">t_sprawdz_poprawnosc_realizacji_zamowienia</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_wydanie_produktu_sklep_2.tr">t_wydanie_produktu_sklep_2</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_wydanie_produktu_sklep_3.tr">t_wydanie_produktu_sklep_3</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_wydanie_produktu_sklep_4.tr">t_wydanie_produktu_sklep_4</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.t_zgloszenie_wydania_produktu.tr">t_zgloszenie_wydania_produktu</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+<h3>Views</h3>
+<img src="expand.png" onClick="expandHandler('DBAviews', 'DBATreeVi')" class="tree" id="DBATreeVi"><a href="javascript://" onClick="expandHandler('DBAviews', 'DBATreeVi')" class="ownerHeading">
+				&nbsp;DBA</a>
+<div id="DBAviews" style="display:none;">
+<table>
+<tr>
+<td>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.v_oferta_sklep_2.vi">v_oferta_sklep_2</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.v_oferta_sklep_3.vi">v_oferta_sklep_3</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.v_oferta_sklep_4.vi">v_oferta_sklep_4</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.v_zamowienia_niezrealizowane.vi">v_zamowienia_niezrealizowane</a>
+<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;<a target="detail" href="detail.html#DBA.vm_raport_miesieczny.vi">vm_raport_miesieczny</a>
+<br>
+</td>
+</tr>
+</table>
+</div>
+<br>
+</body>
+</html>

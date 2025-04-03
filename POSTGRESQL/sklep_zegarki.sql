@@ -1,0 +1,1196 @@
+/*==============================================================*/
+/* DBMS name:      PostgreSQL 8                                 */
+/* Created on:     30.01.2025 20:38:38                          */
+/*==============================================================*/
+
+
+drop index Paragon_faktura_FK;
+
+drop index Dokument_sprzedazy_PK;
+
+drop table Dokument_sprzedazy;
+
+drop index Faktura_FK;
+
+drop index Dokument_zakupu_PK;
+
+drop table Dokument_zakupu;
+
+drop index Kontrahent_PK;
+
+drop table Kontrahent;
+
+drop index Wlasci2_FK;
+
+drop index Lokalizacja_PK;
+
+drop table Lokalizacja;
+
+drop index Model_zegarka_PK;
+
+drop table Model_zegarka;
+
+drop index "Osoba kontaktowa_FK";
+
+drop index Osoba_PK;
+
+drop table Osoba;
+
+drop index Przyjety_towar_FK;
+
+drop index Pozycja_dokumentu_FK;
+
+drop table Pozycja_przyjecia;
+
+drop index realizowany_zegarek2_FK;
+
+drop index pozycja_zamowienia_FK;
+
+drop index realizowany_model_zegarka_FK;
+
+drop table Pozycja_zamowienia;
+
+drop index Dane_pracownika2_FK;
+
+drop index Przelozony_FK;
+
+drop index Miejsce_pracy_FK;
+
+drop index Pracownik_PK;
+
+drop table Pracownik;
+
+drop index Promocja_PK;
+
+drop table Promocja;
+
+drop index Promocja_modelu_zegarka2_FK;
+
+drop index Promocja_modelu_zegarka_FK;
+
+drop table Promocja_modelu_zegarka;
+
+drop index Osoba_przyjmujaca_towar_FK;
+
+drop index Dostawca_FK;
+
+drop index Skladowa_faktury_FK;
+
+drop index Przyjecie_zewnetrzne_PK;
+
+drop table Przyjecie_zewnetrzne;
+
+drop index Reklamacja_PK;
+
+drop table Reklamacja;
+
+drop index Osoba_wydajaca_towar_FK;
+
+drop index Klient_FK;
+
+drop index Wydanie_zewnetrzne_PK;
+
+drop table Wydanie_zewnetrzne;
+
+drop index Odbiorca_zamowienia_FK;
+
+drop index Odbior_zamowienia_FK;
+
+drop index Zamowienie_PK;
+
+drop table Zamowienie;
+
+drop index Skladowa_wydania_FK;
+
+drop index Lokalizacja_zegarka_FK;
+
+drop index Model_zegarka_FK;
+
+drop table Zegarek;
+
+/*==============================================================*/
+/* Table: Dokument_sprzedazy                                    */
+/*==============================================================*/
+create table Dokument_sprzedazy (
+   Id_wydania           INT4                 not null,
+   Id_kontrahenta       INT4                 null,
+   Numer_dokumentu_sprzedazy VARCHAR(20)          not null,
+   Data_wystawienia_sprzedazy DATE                 not null,
+   Data_zaplaty_sprzedazy DATE                 null,
+   Typ_dokumentu_sprzedazy CHAR(1)              not null
+      constraint CKC_TYP_DOKUMENTU_SPR_DOKUMENT check (Typ_dokumentu_sprzedazy in ('F','P')),
+   Wartosc_netto_sprzedazy DECIMAL(10,2)        not null,
+   Kwota_vat_sprzedazy  DECIMAL(3,0)         not null,
+   Wartosc_brutto_sprzedazy DECIMAL(10,2)        not null,
+   Status_platnosci_sprzedazy CHAR(1)              not null
+      constraint CKC_STATUS_PLATNOSCI__DOKUMENT check (Status_platnosci_sprzedazy in ('O','N','W','P','Z','A')),
+   Metoda_platnosci_sprzedazy CHAR(1)              null
+      constraint CKC_METODA_PLATNOSCI__DOKUMENT check (Metoda_platnosci_sprzedazy is null or (Metoda_platnosci_sprzedazy in ('G','P','K','B'))),
+   constraint PK_DOKUMENT_SPRZEDAZY primary key (Id_wydania)
+);
+
+comment on table Dokument_sprzedazy is
+'Dokument sprzedazy jest to:
+dokument potwierdzaj�cy zawarcie transakcji z klientem. Mo�e by� to paragon lub faktura.
+W przypadku gdy klient poprosi� o paragon, paragon tworzy si� od razu, zap�ata wymagana jest od razu. 
+W przypadku wzi�cia zakup�w na faktur�, zap�ata mo�e by� wykonana p�niej, nawet dla kilku wystawionych dokument�w wydania zewn�trznego - faktura mo�e zosta� wygenerowana dla kilku dokument�w wydania.';
+
+comment on column Dokument_sprzedazy.Id_wydania is
+'Jednoznaczny identyfikator dokumentu wydania zewn�trznego.';
+
+comment on column Dokument_sprzedazy.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Dokument_sprzedazy.Numer_dokumentu_sprzedazy is
+'Numer paragonu automatycznie nadawany przez drukark� fiskaln�. Prawnie ka�da drukarka ma w�asny system nadawania numer�w, ale istnieje ryzyko wyst�pienia b��d�w.';
+
+comment on column Dokument_sprzedazy.Data_wystawienia_sprzedazy is
+'Data wystawienia paragonu lub faktury, czyli inaczej dzie� sprzeda�y';
+
+comment on column Dokument_sprzedazy.Data_zaplaty_sprzedazy is
+'Data zap�aty za zakupiony produkt. W razie wyboru opcji paragonu, kwota musi zosta� zap�acona podczas transakcji. Gdy klient wybierze opcje zakupu na faktur�, zap�ata mo�e zosta� wykonana p�niej';
+
+comment on column Dokument_sprzedazy.Typ_dokumentu_sprzedazy is
+'Typ dokumentu sprzedazy jest to
+informacja czy zakupy zosta�y wzi�te na paragon czy faktur�
+F- faktura
+P - paragon';
+
+comment on column Dokument_sprzedazy.Wartosc_netto_sprzedazy is
+'Cena bez wliczonego podatku od towar�w i us�ug (VAT)';
+
+comment on column Dokument_sprzedazy.Kwota_vat_sprzedazy is
+'podatek, kt�ry jest doliczany do ceny sprzeda�y towar�w';
+
+comment on column Dokument_sprzedazy.Wartosc_brutto_sprzedazy is
+' cena ko�cowa, jak� konsument p�aci za towar obejmuj�ca zar�wno cen� netto, jak i dodany podatek VAT.';
+
+comment on column Dokument_sprzedazy.Status_platnosci_sprzedazy is
+'Status p�atno�� informuje na jakim etapie znajduje si� p�atno��.
+O - op�acona
+N - nieop�acona
+W - wys�ana
+P - przeterminowana
+Z - zatwierdzona
+A - anulowana';
+
+comment on column Dokument_sprzedazy.Metoda_platnosci_sprzedazy is
+'Metoda platnosci informuje w jaki spos�b zosta�a dokonana p�atno��. 
+got�wka - G
+przelew - P
+blik - B
+karta - K';
+
+/*==============================================================*/
+/* Index: Dokument_sprzedazy_PK                                 */
+/*==============================================================*/
+create unique index Dokument_sprzedazy_PK on Dokument_sprzedazy (
+Id_wydania
+);
+
+/*==============================================================*/
+/* Index: Paragon_faktura_FK                                    */
+/*==============================================================*/
+create  index Paragon_faktura_FK on Dokument_sprzedazy (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Table: Dokument_zakupu                                       */
+/*==============================================================*/
+create table Dokument_zakupu (
+   Id_dokumentu_zakupu  INT4                 not null,
+   Id_kontrahenta       INT4                 not null,
+   Numer_dokumentu_zakupu VARCHAR(20)          not null,
+   Data_wystawienia_zakupu DATE                 not null,
+   Data_zaplaty_zakupu  DATE                 null,
+   Typ_dokumentu_zakupu VARCHAR(20)          not null
+      constraint CKC_TYP_DOKUMENTU_ZAK_DOKUMENT check (Typ_dokumentu_zakupu in ('F','P','K','Z')),
+   Wartosc_netto_zakupu DECIMAL(10,2)        not null,
+   Kwota_vat_zakupu     DECIMAL(3,0)         not null,
+   Wartosc_brutto_zakupu DECIMAL(10,2)        not null,
+   Status_platnosci_zakupu CHAR(1)              not null
+      constraint CKC_STATUS_PLATNOSCI__DOKUMENT check (Status_platnosci_zakupu in ('O','N','W','P','Z','A')),
+   constraint PK_DOKUMENT_ZAKUPU primary key (Id_dokumentu_zakupu)
+);
+
+comment on table Dokument_zakupu is
+'Dokument zakupu jest to:
+dokument potwierdzaj�cy wystawienie faktury dla dostawcy za dostarczenie towaru. Faktura mo�e zosta� wystawiona na kilka dokument�w Przyj�cia zewn�trznego.';
+
+comment on column Dokument_zakupu.Id_dokumentu_zakupu is
+'Id dokumentu zakupu jest to 
+jednoznaczny identyfikator identyfikuj�cy faktur� wewn�trz firmy.
+Identyfikator jest potrzebny, ze wzgl�du na to �e r�ni dostawcy mog� wystawi� faktur� o tym samym numerze.';
+
+comment on column Dokument_zakupu.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Dokument_zakupu.Numer_dokumentu_zakupu is
+'Numer faktury otrzymanej od dostawcy';
+
+comment on column Dokument_zakupu.Data_wystawienia_zakupu is
+'Data w kt�rej zosta�a wystawiona faktura';
+
+comment on column Dokument_zakupu.Data_zaplaty_zakupu is
+'Data w kt�rym faktura zosta�a op�acona';
+
+comment on column Dokument_zakupu.Typ_dokumentu_zakupu is
+'Typ dokumentu sprzedazy jest to
+informacja jaka forma dokumentu zosta�a wystawiona.
+F - faktura
+P - proforma
+K - korekta
+Z - zaliczka';
+
+comment on column Dokument_zakupu.Wartosc_netto_zakupu is
+'Cena bez wliczonego podatku od towar�w i us�ug (VAT)';
+
+comment on column Dokument_zakupu.Kwota_vat_zakupu is
+'podatek, kt�ry jest doliczany do ceny sprzeda�y towar�w';
+
+comment on column Dokument_zakupu.Wartosc_brutto_zakupu is
+' cena ko�cowa, jak� konsument p�aci za towar obejmuj�ca zar�wno cen� netto, jak i dodany podatek VAT.';
+
+comment on column Dokument_zakupu.Status_platnosci_zakupu is
+'Status p�atno�� informuje na jakim etapie znajduje si� p�atno��.
+O - op�acona
+N - nieop�acona
+W - wys�ana
+P - przeterminowana
+Z - zatwierdzona
+A - anulowana';
+
+/*==============================================================*/
+/* Index: Dokument_zakupu_PK                                    */
+/*==============================================================*/
+create unique index Dokument_zakupu_PK on Dokument_zakupu (
+Id_dokumentu_zakupu
+);
+
+/*==============================================================*/
+/* Index: Faktura_FK                                            */
+/*==============================================================*/
+create  index Faktura_FK on Dokument_zakupu (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Table: Kontrahent                                            */
+/*==============================================================*/
+create table Kontrahent (
+   Id_kontrahenta       INT4                 not null,
+   Typ_kontrahenta      CHAR(1)              not null
+      constraint CKC_TYP_KONTRAHENTA_KONTRAHE check (Typ_kontrahenta in ('K','D')),
+   Nazwa_firmy          VARCHAR(50)          not null,
+   Nip_firmy            VARCHAR(10)          not null,
+   Regon_firmy          VARCHAR(14)          not null,
+   Kraj_firmy           VARCHAR(30)          not null,
+   constraint PK_KONTRAHENT primary key (Id_kontrahenta)
+);
+
+comment on table Kontrahent is
+'Kontrahent jest to:
+osoba z kt�r� zosta�a zawarta transakcja (zakup - dostawca / sprzeda� - klient) lub kt�ra z�o�y�a zam�wienie (klient).';
+
+comment on column Kontrahent.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Kontrahent.Typ_kontrahenta is
+'Typ klienta informuje czy kontrahent jest klientem czy dostawc�.
+K - klient
+D - dostawca';
+
+comment on column Kontrahent.Nazwa_firmy is
+'Nazwa firmy kontrahenta';
+
+comment on column Kontrahent.Nip_firmy is
+'Nip firmy';
+
+comment on column Kontrahent.Regon_firmy is
+'Regon firmy';
+
+comment on column Kontrahent.Kraj_firmy is
+'Kraj zarejestrowanai firmy';
+
+/*==============================================================*/
+/* Index: Kontrahent_PK                                         */
+/*==============================================================*/
+create unique index Kontrahent_PK on Kontrahent (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Table: Lokalizacja                                           */
+/*==============================================================*/
+create table Lokalizacja (
+   Mag                  INT2                 not null,
+   Id_osoby             INT4                 null,
+   Miasto               VARCHAR(20)          not null,
+   Poczta               CHAR(5)              not null,
+   Ulica                VARCHAR(30)          not null,
+   Numer_lokalu         CHAR(3)              null,
+   Rodzaj               CHAR(1)              not null
+      constraint CKC_RODZAJ_LOKALIZA check (Rodzaj in ('N','W')),
+   constraint PK_LOKALIZACJA primary key (Mag)
+);
+
+comment on table Lokalizacja is
+'Lokalizacja jest to:
+fizyczna lokalizacja sklepu lub magazyna jednoznacznie okre�lona przez identyfikator Mag. Przechowuje r�wnie� dane o w�a�cicielu w przypadku najmowanych lokali.';
+
+comment on column Lokalizacja.Mag is
+'Mag jest to 
+identyfikator, kt�ry jednoznacznie definiuje dan� lokalizacj� - sklep lub magazyn.
+Magazyn g��wny jest to id 1.';
+
+comment on column Lokalizacja.Id_osoby is
+'Identyfikator jednoznacznie identyfikuj�cy osob� niezale�nie od rodzaju';
+
+comment on column Lokalizacja.Miasto is
+'Miasto danego lokalu';
+
+comment on column Lokalizacja.Poczta is
+'Poczta danego lokalu';
+
+comment on column Lokalizacja.Ulica is
+'Ulica danego lokalu';
+
+comment on column Lokalizacja.Numer_lokalu is
+'Numer lokalu danego lokalu';
+
+comment on column Lokalizacja.Rodzaj is
+'Rodzaj jest to:
+informacja czy lokal jest najmowany czy w�asny.
+N - najmowany
+W - w�asny';
+
+/*==============================================================*/
+/* Index: Lokalizacja_PK                                        */
+/*==============================================================*/
+create unique index Lokalizacja_PK on Lokalizacja (
+Mag
+);
+
+/*==============================================================*/
+/* Index: Wlasci2_FK                                            */
+/*==============================================================*/
+create  index Wlasci2_FK on Lokalizacja (
+Id_osoby
+);
+
+/*==============================================================*/
+/* Table: Model_zegarka                                         */
+/*==============================================================*/
+CREATE TABLE Model_zegarka (
+   Kod_zegarka          CHAR(8)              NOT NULL,
+   Marka_zegarka        VARCHAR(100)         NOT NULL,
+   Model_zegarka        VARCHAR(100)         NOT NULL,
+   Kategoria_zegarka    VARCHAR(2)           NULL
+      CONSTRAINT CKC_KATEGORIA_ZEGARKA_MODEL_ZE CHECK (Kategoria_zegarka IS NULL OR Kategoria_zegarka IN ('C','S','SM','SC','L','V')),
+   Mechanizm_zegarka    CHAR(1)              NULL
+      CONSTRAINT CKC_MECHANIZM_ZEGARKA_MODEL_ZE CHECK (Mechanizm_zegarka IS NULL OR Mechanizm_zegarka IN ('K','A','M','H','S')),
+   Material_koperty_zegarka VARCHAR(20)      NULL,
+   Rozmiar_koperty_zegarka DECIMAL(2,0)      NULL,
+   Pasek_zegarka        VARCHAR(20)          NULL,
+   Przeznaczenie_zegarka CHAR(1)              NULL
+      CONSTRAINT CKC_PRZEZNACZENIE_ZEG_MODEL_ZE CHECK (Przeznaczenie_zegarka IS NULL OR Przeznaczenie_zegarka IN ('M','K','U','D')),
+   Wodoodpornosc_zegarka BOOLEAN             NULL
+      CONSTRAINT CKC_WODOODPORNOSC_ZEG_MODEL_ZE CHECK (Wodoodpornosc_zegarka IS NULL OR Wodoodpornosc_zegarka IN (TRUE, FALSE)),
+   Cena_netto_zegarka   DECIMAL(10,2)        NOT NULL
+      CONSTRAINT CKC_CENA_NETTO_ZEGARK_MODEL_ZE CHECK (Cena_netto_zegarka >= 0),
+   Cena_brutto_zegarka  DECIMAL(10,2)        NULL,
+   Kwota_vat_zegarka    DECIMAL(3)           NULL,
+   Ilosc_towaru_na_stanie INT4               NOT NULL,
+   CONSTRAINT PK_MODEL_ZEGARKA PRIMARY KEY (Kod_zegarka)
+);
+
+
+comment on table Model_zegarka is
+'Model zegarka to:
+ewidencja dost�pnych zegark�w w ca�ej firmie  Przechowuje wszystkie potrzebne parametry zegarka.
+Przechowuje ilo�� dost�pnych sztuk modelu zegarka.';
+
+comment on column Model_zegarka.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Model_zegarka.Marka_zegarka is
+'Nazwa producenta zegarka. Wymagane.';
+
+comment on column Model_zegarka.Model_zegarka is
+'Nawa modelu zegarka.';
+
+comment on column Model_zegarka.Kategoria_zegarka is
+'Obowi�zkowe. Kategorie zegark�w:
+C - klasyczny 
+S - sportowy 
+SM - smart
+SC - smart casual
+L - luksusowy 
+V - vintage';
+
+comment on column Model_zegarka.Mechanizm_zegarka is
+'Obowi�zkowe. Dost�pne mechanizmy:
+K - klasyczny
+A - automatyczny
+M - manulany
+H - hybrydowy
+S - solarny';
+
+comment on column Model_zegarka.Material_koperty_zegarka is
+'Dost�pne materia�y:
+stal, z�oto, ceramika, tytan, drewno, platyna, carbon, srebro, aluminium';
+
+comment on column Model_zegarka.Rozmiar_koperty_zegarka is
+'Rozmiar koperty podany w mm.';
+
+comment on column Model_zegarka.Pasek_zegarka is
+'Dost�pne paski:
+skora, metal, nylon, silikon, perlon, ceramika, drewno, carbon';
+
+comment on column Model_zegarka.Przeznaczenie_zegarka is
+'Przeznaczenie:
+M - m�czyzna
+K - kobieta
+U - unisex
+D - dziecko';
+
+comment on column Model_zegarka.Wodoodpornosc_zegarka is
+'1 oznacza, �e zegarek jest wodoodporny
+0 oznacza, �e zegarek nie jest wodoodporny';
+
+comment on column Model_zegarka.Cena_netto_zegarka is
+'Cena bez wliczonego podatku od towar�w i us�ug (VAT)';
+
+comment on column Model_zegarka.Cena_brutto_zegarka is
+' cena ko�cowa, jak� konsument p�aci za towar obejmuj�ca zar�wno cen� netto, jak i dodany podatek VAT.';
+
+comment on column Model_zegarka.Kwota_vat_zegarka is
+'Podatek, kt�ry jest doliczany do ceny sprzeda�y towar�w';
+
+comment on column Model_zegarka.Ilosc_towaru_na_stanie is
+'Ilo�� dost�pnego towaru w ca�ej sieci. Informacja potrzebna dla zam�wie� oraz w celach inwentaryzajnych.';
+
+/*==============================================================*/
+/* Index: Model_zegarka_PK                                      */
+/*==============================================================*/
+create unique index Model_zegarka_PK on Model_zegarka (
+Kod_zegarka
+);
+
+/*==============================================================*/
+/* Table: Osoba                                                 */
+/*==============================================================*/
+create table Osoba (
+   Id_osoby             INT4                 not null,
+   Id_kontrahenta       INT4                 null,
+   Imie                 VARCHAR(20)          null,
+   Nazwisko             VARCHAR(30)          null,
+   Telefon              VARCHAR(15)          null,
+   Email                VARCHAR(50)          null,
+   constraint PK_OSOBA primary key (Id_osoby)
+);
+
+comment on table Osoba is
+'Osoba przechowuje dane os�b trzech rodzaj�w
+Przechowuje imie, nazwisko, telefon, email dla:.
+1) pracownik�w 
+2) w�a�cicieli lokali najmowanych
+3) dostawc�w / os�b kontaktowych z danej firmy (kontrahent)
+4) kupuj�cych na faktur� / os�b kontaktowych z danej firmy (kontrahent)';
+
+comment on column Osoba.Id_osoby is
+'Identyfikator jednoznacznie identyfikuj�cy osob� niezale�nie od rodzaju';
+
+comment on column Osoba.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Osoba.Imie is
+'Imie osoby';
+
+comment on column Osoba.Nazwisko is
+'Nazwisko osoby';
+
+comment on column Osoba.Telefon is
+'Telefon mo�e przyjmowa� znaki + okreslajace kierunkowy. Formaty z r�nych kraj�w s� obs�ugiwane';
+
+comment on column Osoba.Email is
+'Email kontaktowy do osoby';
+
+/*==============================================================*/
+/* Index: Osoba_PK                                              */
+/*==============================================================*/
+create unique index Osoba_PK on Osoba (
+Id_osoby
+);
+
+/*==============================================================*/
+/* Index: "Osoba kontaktowa_FK"                                 */
+/*==============================================================*/
+create  index "Osoba kontaktowa_FK" on Osoba (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Table: Pozycja_przyjecia                                     */
+/*==============================================================*/
+create table Pozycja_przyjecia (
+   Id_przyjecia         INT4                 not null,
+   Id_pozycja_przyjecia INT4                 not null,
+   Kod_zegarka          CHAR(8)              not null,
+   Ilosc_towaru_przyjecia INT4                 not null,
+   constraint PK_POZYCJA_PRZYJECIA primary key (Id_przyjecia, Id_pozycja_przyjecia)
+);
+
+comment on table Pozycja_przyjecia is
+'Pozycja przyj�cia okre�la ilo�� ka�dego z przyj�tych towar�w.';
+
+comment on column Pozycja_przyjecia.Id_przyjecia is
+'Jednoznaczny identyfikator identyfikuj�cy dokument przyj�cia zewn�trznego.';
+
+comment on column Pozycja_przyjecia.Id_pozycja_przyjecia is
+'Jednoznaczny identyfikator pozycji na dokumencie przyj�cia zewn�trznego.';
+
+comment on column Pozycja_przyjecia.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Pozycja_przyjecia.Ilosc_towaru_przyjecia is
+'Ilo�� przyj�tego modelu zegarka w przyj�ciu zewn�trznym.';
+
+/*==============================================================*/
+/* Index: Pozycja_dokumentu_FK                                  */
+/*==============================================================*/
+create  index Pozycja_dokumentu_FK on Pozycja_przyjecia (
+Id_przyjecia
+);
+
+/*==============================================================*/
+/* Index: Przyjety_towar_FK                                     */
+/*==============================================================*/
+create  index Przyjety_towar_FK on Pozycja_przyjecia (
+Kod_zegarka
+);
+
+/*==============================================================*/
+/* Table: Pozycja_zamowienia                                    */
+/*==============================================================*/
+create table Pozycja_zamowienia (
+   Id_zamowienia        INT4                 not null,
+   Id_pozycja_zamowienia INT4                 not null,
+   Kod_zegarka          CHAR(8)              not null,
+   Zeg_Kod_zegarka      CHAR(8)              null,
+   Numer_seryjny_zegarka CHAR(12)             null,
+   constraint PK_POZYCJA_ZAMOWIENIA primary key (Id_zamowienia, Id_pozycja_zamowienia)
+);
+
+comment on table Pozycja_zamowienia is
+'Pozycja zam�wienia dotyczy jednego zam�wienia.
+Pozycja zam�wienia przechowuje 1 model zegarka w ilo�ci r�wnej 1, jest to wymagane w celu dalszego procesowania zam�wienia - klient nie zamawia zegarka o konkretnym numerze seryjnym tylko pewien model.
+Konkretna jednostka zegarka zostaje dopisana przez pracownika podczas realizacji zam�wienia';
+
+comment on column Pozycja_zamowienia.Id_zamowienia is
+'Jednoznaczny identyfikator zam�wienia';
+
+comment on column Pozycja_zamowienia.Id_pozycja_zamowienia is
+'Identyfikator pozycji zam�wienia wraz z zagregowanym Id_zamowienia jednoznacznie identyfikuje pozycje z danego zam�wienia';
+
+comment on column Pozycja_zamowienia.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Pozycja_zamowienia.Zeg_Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Pozycja_zamowienia.Numer_seryjny_zegarka is
+'Numer seryjny zegarka jest to numer jednoznacznie identyfikuj�cy zegarek od danego dostawcy. 
+Numery seryjne od r�nych dostawc�w mog� si� r�ni� formatem, mog� si� powt�rzy�. Maksymalna d�ugo�� to 12 znak�w.
+Wraz z kodem zegarka tworz� dwu-atrybutowy klucz g��wny jednoznacznie identyfikauj�cy zegarek w ca�ej sieci sklep�w.';
+
+/*==============================================================*/
+/* Index: realizowany_model_zegarka_FK                          */
+/*==============================================================*/
+create  index realizowany_model_zegarka_FK on Pozycja_zamowienia (
+Kod_zegarka
+);
+
+/*==============================================================*/
+/* Index: pozycja_zamowienia_FK                                 */
+/*==============================================================*/
+create  index pozycja_zamowienia_FK on Pozycja_zamowienia (
+Id_zamowienia
+);
+
+/*==============================================================*/
+/* Index: realizowany_zegarek2_FK                               */
+/*==============================================================*/
+create  index realizowany_zegarek2_FK on Pozycja_zamowienia (
+Zeg_Kod_zegarka,
+Numer_seryjny_zegarka
+);
+
+/*==============================================================*/
+/* Table: Pracownik                                             */
+/*==============================================================*/
+create table Pracownik (
+   Id_pracownika        INT4                 not null,
+   Id_osoby             INT4                 not null,
+   Pra_Id_pracownika    INT4                 null,
+   Mag                  INT2                 not null,
+   Stanowisko_pracownika VARCHAR(30)          not null,
+   Login_systemowy      VARCHAR(20)          null,
+   Haslo_systemowe      VARCHAR(50)          null,
+   constraint PK_PRACOWNIK primary key (Id_pracownika)
+);
+
+comment on table Pracownik is
+'Pracownik jest to:
+osoba fizyczna zatrudniona w sieci sklep�w z zegarkami, pracuj�ca w jednym ze sklep�w lub w magazynie g��wnym.';
+
+comment on column Pracownik.Id_pracownika is
+'Id pracownika jest to
+jednoznaczny klucz identyfikuj�cy pracownika. Umo�liwia rozr�nienie pracownik�w o tym samym imieniu i nazwisku.';
+
+comment on column Pracownik.Id_osoby is
+'Identyfikator jednoznacznie identyfikuj�cy osob� niezale�nie od rodzaju';
+
+comment on column Pracownik.Pra_Id_pracownika is
+'Id pracownika jest to
+jednoznaczny klucz identyfikuj�cy pracownika. Umo�liwia rozr�nienie pracownik�w o tym samym imieniu i nazwisku.';
+
+comment on column Pracownik.Mag is
+'Mag jest to 
+identyfikator, kt�ry jednoznacznie definiuje dan� lokalizacj� - sklep lub magazyn.
+Magazyn g��wny jest to id 1.';
+
+comment on column Pracownik.Stanowisko_pracownika is
+'Stanowisko informuje o pozycji pracownika w firmie.
+Przyk�adowe stanowiska to:
+Manager sklepu
+Kierownik sklepu
+Sprzedawca
+Magazynier
+Kierownik magazynu
+Kierownik zmiany';
+
+comment on column Pracownik.Login_systemowy is
+'Login do logowania do systemu firmowego WMS, ERP, POS';
+
+comment on column Pracownik.Haslo_systemowe is
+'Ciag znakow po zakodowaniu przez aplikacje podczas tworzenia has�a i zapisane w bazie danych. Podczas pr�by zalogowania przez pracownika do systemu ERP / WMS / POS has�o wpisane do pola formularza przez pracownika jest haszowane tak� sam� metod� i por�wnywane z ci�giem znak�w z bazy.';
+
+/*==============================================================*/
+/* Index: Pracownik_PK                                          */
+/*==============================================================*/
+create unique index Pracownik_PK on Pracownik (
+Id_pracownika
+);
+
+/*==============================================================*/
+/* Index: Miejsce_pracy_FK                                      */
+/*==============================================================*/
+create  index Miejsce_pracy_FK on Pracownik (
+Mag
+);
+
+/*==============================================================*/
+/* Index: Przelozony_FK                                         */
+/*==============================================================*/
+create  index Przelozony_FK on Pracownik (
+Pra_Id_pracownika
+);
+
+/*==============================================================*/
+/* Index: Dane_pracownika2_FK                                   */
+/*==============================================================*/
+create  index Dane_pracownika2_FK on Pracownik (
+Id_osoby
+);
+
+/*==============================================================*/
+/* Table: Promocja                                              */
+/*==============================================================*/
+create table Promocja (
+   Id_promocji          INT4                 not null,
+   Data_rozpoczecia_promocji DATE                 not null,
+   Data_zakonczenia_promocji DATE                 not null,
+   Procent_znizki       DECIMAL(4,2)         not null
+      constraint CKC_PROCENT_ZNIZKI_PROMOCJA check (Procent_znizki between 1 and 50),
+   constraint PK_PROMOCJA primary key (Id_promocji)
+);
+
+comment on table Promocja is
+'Promocja jest to
+informacja czy dany zegarek jest obj�ty jak�� promocj�. 
+Zegarek mo�e by� obj�ty kilkoma promocjami.
+Promocja mo�e dotyczy� kilku zegark�w.';
+
+comment on column Promocja.Id_promocji is
+'Identyfikator jednoznacznie identyfikuj�cy promocj�';
+
+comment on column Promocja.Data_rozpoczecia_promocji is
+'Data okre�laj�ca dat� od kt�rej obowi�zuje promocja';
+
+comment on column Promocja.Data_zakonczenia_promocji is
+'Data do kt�rej obowi�zuje promocja, w��cznie';
+
+comment on column Promocja.Procent_znizki is
+'Ca�kowita liczba opisuj�cy procent jaki zostanie zdj�ty z ceny zegarka. Jednostk� jest procent';
+
+/*==============================================================*/
+/* Index: Promocja_PK                                           */
+/*==============================================================*/
+create unique index Promocja_PK on Promocja (
+Id_promocji
+);
+
+/*==============================================================*/
+/* Table: Promocja_modelu_zegarka                               */
+/*==============================================================*/
+create table Promocja_modelu_zegarka (
+   Kod_zegarka          CHAR(8)              not null,
+   Id_promocji          INT4                 not null,
+   constraint PK_PROMOCJA_MODELU_ZEGARKA primary key (Kod_zegarka, Id_promocji)
+);
+
+comment on table Promocja_modelu_zegarka is
+'Promocja mo�e dotyczy� kilku zegark�w. Zegarek mo�e by� obj�ty kilkoma promocjami';
+
+comment on column Promocja_modelu_zegarka.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Promocja_modelu_zegarka.Id_promocji is
+'Identyfikator jednoznacznie identyfikuj�cy promocj�';
+
+/*==============================================================*/
+/* Index: Promocja_modelu_zegarka_FK                            */
+/*==============================================================*/
+create  index Promocja_modelu_zegarka_FK on Promocja_modelu_zegarka (
+Kod_zegarka
+);
+
+/*==============================================================*/
+/* Index: Promocja_modelu_zegarka2_FK                           */
+/*==============================================================*/
+create  index Promocja_modelu_zegarka2_FK on Promocja_modelu_zegarka (
+Id_promocji
+);
+
+/*==============================================================*/
+/* Table: Przyjecie_zewnetrzne                                  */
+/*==============================================================*/
+create table Przyjecie_zewnetrzne (
+   Id_przyjecia         INT4                 not null,
+   Id_pracownika        INT4                 not null,
+   Id_dokumentu_zakupu  INT4                 null,
+   Id_kontrahenta       INT4                 not null,
+   Data_wystawienia_przyjecia DATE                 not null,
+   Numer_wydania_dostawcy VARCHAR(20)          not null,
+   constraint PK_PRZYJECIE_ZEWNETRZNE primary key (Id_przyjecia)
+);
+
+comment on table Przyjecie_zewnetrzne is
+'Przyj�cie zewn�trzne jest to:
+rejestracja przyj�cia towar�w na magazyn g��wny od dostawc�w. Towar zakupiony hurtowo, nieznane numery seryjne.
+Przyj�cie zewn�trzne mo�e zawiera� r�ne ilo��i r�nych modeli zegark�w, dlatego potrzebuje intersekcji.';
+
+comment on column Przyjecie_zewnetrzne.Id_przyjecia is
+'Jednoznaczny identyfikator identyfikuj�cy dokument przyj�cia zewn�trznego.';
+
+comment on column Przyjecie_zewnetrzne.Id_pracownika is
+'Id pracownika jest to
+jednoznaczny klucz identyfikuj�cy pracownika. Umo�liwia rozr�nienie pracownik�w o tym samym imieniu i nazwisku.';
+
+comment on column Przyjecie_zewnetrzne.Id_dokumentu_zakupu is
+'Id dokumentu zakupu jest to 
+jednoznaczny identyfikator identyfikuj�cy faktur� wewn�trz firmy.
+Identyfikator jest potrzebny, ze wzgl�du na to �e r�ni dostawcy mog� wystawi� faktur� o tym samym numerze.';
+
+comment on column Przyjecie_zewnetrzne.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Przyjecie_zewnetrzne.Data_wystawienia_przyjecia is
+'Data wystawienai dokumentu przyj�cia zewn�trznego';
+
+comment on column Przyjecie_zewnetrzne.Numer_wydania_dostawcy is
+'Numer wydanai dostawcy jest to
+numer dokumentu stworzonego przez dostawc� i przej�tego podczas przyjmowania towaru od dostawcy, potrzebne w celu weryfikacji towaru.';
+
+/*==============================================================*/
+/* Index: Przyjecie_zewnetrzne_PK                               */
+/*==============================================================*/
+create unique index Przyjecie_zewnetrzne_PK on Przyjecie_zewnetrzne (
+Id_przyjecia
+);
+
+/*==============================================================*/
+/* Index: Skladowa_faktury_FK                                   */
+/*==============================================================*/
+create  index Skladowa_faktury_FK on Przyjecie_zewnetrzne (
+Id_dokumentu_zakupu
+);
+
+/*==============================================================*/
+/* Index: Dostawca_FK                                           */
+/*==============================================================*/
+create  index Dostawca_FK on Przyjecie_zewnetrzne (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Index: Osoba_przyjmujaca_towar_FK                            */
+/*==============================================================*/
+create  index Osoba_przyjmujaca_towar_FK on Przyjecie_zewnetrzne (
+Id_pracownika
+);
+
+/*==============================================================*/
+/* Table: Reklamacja                                            */
+/*==============================================================*/
+create table Reklamacja (
+   Kod_zegarka          CHAR(8)              not null,
+   Numer_seryjny_zegarka CHAR(12)             not null,
+   Data_reklamacji      DATE                 null,
+   Powod_reklamacji     TEXT                 not null,
+   constraint PK_REKLAMACJA primary key (Kod_zegarka, Numer_seryjny_zegarka)
+);
+
+comment on table Reklamacja is
+'Reklamacja przechowuje informacje o zareklamowanych przez klienta zegarkach. Za zareklamowany produkt, klient otrzymuje zwrot koszt�w, co musi by� wzi�te pod uwag� w rozliczeniach dobowych, miesi�cznych, rocznych.
+Reklamacja przechowuje dat� oraz pow�d zareklamowania';
+
+comment on column Reklamacja.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Reklamacja.Numer_seryjny_zegarka is
+'Numer seryjny zegarka jest to numer jednoznacznie identyfikuj�cy zegarek od danego dostawcy. 
+Numery seryjne od r�nych dostawc�w mog� si� r�ni� formatem, mog� si� powt�rzy�. Maksymalna d�ugo�� to 12 znak�w.
+Wraz z kodem zegarka tworz� dwu-atrybutowy klucz g��wny jednoznacznie identyfikauj�cy zegarek w ca�ej sieci sklep�w.';
+
+comment on column Reklamacja.Data_reklamacji is
+'Data zareklamowania produktu przez klienta';
+
+comment on column Reklamacja.Powod_reklamacji is
+'Pow�d podany przez klienta podczas przyjmowania reklamacji zapisany przez pracownika sklepu';
+
+/*==============================================================*/
+/* Index: Reklamacja_PK                                         */
+/*==============================================================*/
+create unique index Reklamacja_PK on Reklamacja (
+Kod_zegarka,
+Numer_seryjny_zegarka
+);
+
+/*==============================================================*/
+/* Table: Wydanie_zewnetrzne                                    */
+/*==============================================================*/
+create table Wydanie_zewnetrzne (
+   Id_wydania           INT4                 not null,
+   Id_kontrahenta       INT4                 null,
+   Id_pracownika        INT4                 not null,
+   Data_wystawienia_wydania DATE                 not null,
+   Numer_kasy_fiskalnej VARCHAR(20)          not null,
+   constraint PK_WYDANIE_ZEWNETRZNE primary key (Id_wydania)
+);
+
+comment on table Wydanie_zewnetrzne is
+'Wydanie zewn�trzne jest to:
+rejestracja wydania towar�w ze stanu magazynu na rzecz klienta. Po zatwierdzeniu nabitych na kas� produkt�w przez sprzedawc�, dla tych produkt�w generowany jest dokument wydania zewn�trznego. 
+W przypadku gdy klient poprosi� o paragon, zap�ata wymagana jest od razu. 
+W przypadku wzi�cia zakup�w na faktur�, zap�ata mo�e by� wykonana p�niej, nawet dla kilku wystawionych dokument�w wydania zewn�trznego - faktura mo�e zosta� wygenerowana dla kilku dokument�w wydania.';
+
+comment on column Wydanie_zewnetrzne.Id_wydania is
+'Jednoznaczny identyfikator dokumentu wydania zewn�trznego.';
+
+comment on column Wydanie_zewnetrzne.Id_kontrahenta is
+'Identyfikator jednoznacznie okre�laj�cy kontrahenta';
+
+comment on column Wydanie_zewnetrzne.Id_pracownika is
+'Id pracownika jest to
+jednoznaczny klucz identyfikuj�cy pracownika. Umo�liwia rozr�nienie pracownik�w o tym samym imieniu i nazwisku.';
+
+comment on column Wydanie_zewnetrzne.Data_wystawienia_wydania is
+'Data wystawienai dokumentu wydania zewn�trznego.';
+
+comment on column Wydanie_zewnetrzne.Numer_kasy_fiskalnej is
+'Numer kasy fiskalnej jest nadany przez producenta kasy. Informacja potrzebna dla rozlicze� z urz�dem skarbowym.';
+
+/*==============================================================*/
+/* Index: Wydanie_zewnetrzne_PK                                 */
+/*==============================================================*/
+create unique index Wydanie_zewnetrzne_PK on Wydanie_zewnetrzne (
+Id_wydania
+);
+
+/*==============================================================*/
+/* Index: Klient_FK                                             */
+/*==============================================================*/
+create  index Klient_FK on Wydanie_zewnetrzne (
+Id_kontrahenta
+);
+
+/*==============================================================*/
+/* Index: Osoba_wydajaca_towar_FK                               */
+/*==============================================================*/
+create  index Osoba_wydajaca_towar_FK on Wydanie_zewnetrzne (
+Id_pracownika
+);
+
+/*==============================================================*/
+/* Table: Zamowienie                                            */
+/*==============================================================*/
+create table Zamowienie (
+   Id_zamowienia        INT4                 not null,
+   Mag                  INT2                 not null,
+   Id_osoby             INT4                 not null,
+   Data_zamowienia      DATE                 not null,
+   Status_zamowienia    VARCHAR(1)           not null
+      constraint CKC_STATUS_ZAMOWIENIA_ZAMOWIEN check (Status_zamowienia in ('D','O','P','R','Z')),
+   constraint PK_ZAMOWIENIE primary key (Id_zamowienia)
+);
+
+comment on table Zamowienie is
+'Zam�wienie jest to
+z�o�one przez klienta zapotrzebowanie na zegarek, aktualnie niedost�pny w danej lokalizacji.
+Zam�wienie jest przypisane do konkretnej lokalizacji odbioru, mo�e si� sk�ada� z kilku produkt�w.';
+
+comment on column Zamowienie.Id_zamowienia is
+'Jednoznaczny identyfikator zam�wienia';
+
+comment on column Zamowienie.Mag is
+'Mag jest to 
+identyfikator, kt�ry jednoznacznie definiuje dan� lokalizacj� - sklep lub magazyn.
+Magazyn g��wny jest to id 1.';
+
+comment on column Zamowienie.Id_osoby is
+'Identyfikator jednoznacznie identyfikuj�cy osob� niezale�nie od rodzaju';
+
+comment on column Zamowienie.Data_zamowienia is
+'Data z�o�enia przez klienta zam�wienia';
+
+comment on column Zamowienie.Status_zamowienia is
+'Status informuje o stanie zegarka. Podstawowe statusy:
+D - dost�pny do odbioru
+O - odebrany przez klienta
+P - w trakcie pakowania
+R - przyj�to do realizacji
+Z -   zam�wiony do dostarczenia przez dostawc�';
+
+/*==============================================================*/
+/* Index: Zamowienie_PK                                         */
+/*==============================================================*/
+create unique index Zamowienie_PK on Zamowienie (
+Id_zamowienia
+);
+
+/*==============================================================*/
+/* Index: Odbior_zamowienia_FK                                  */
+/*==============================================================*/
+create  index Odbior_zamowienia_FK on Zamowienie (
+Mag
+);
+
+/*==============================================================*/
+/* Index: Odbiorca_zamowienia_FK                                */
+/*==============================================================*/
+create  index Odbiorca_zamowienia_FK on Zamowienie (
+Id_osoby
+);
+
+/*==============================================================*/
+/* Table: Zegarek                                               */
+/*==============================================================*/
+create table Zegarek (
+   Kod_zegarka          CHAR(8)              not null,
+   Numer_seryjny_zegarka CHAR(12)             not null,
+   Id_wydania           INT4                 null,
+   Mag                  INT2                 not null,
+   Certyfikat_zegarka   VARCHAR(20)          null,
+   constraint PK_ZEGAREK primary key (Kod_zegarka, Numer_seryjny_zegarka)
+);
+
+comment on table Zegarek is
+'Zegarek jest to:
+ewidencja konkretnych zegark�w o znanych numerach seryjnych przechowywanych w konkretnych lokalizacjach (sklepy, magazyny). Ewidencja przechowuje r�wnie� zegarki sprzedane, w razie zg�oszonej reklamacji lub potrzeby serwisu zegarka przez klienta.';
+
+comment on column Zegarek.Kod_zegarka is
+'Kod produktu to identyfikator produktu zast�puj�cy jako klucz g��wny dwa atrybutu model i marka.
+Tworzony jest poprzez zespolenie dw�ch pierwszych liter marki, dw�ch pierwszych liter modelu, 4 unikalnych cyfr.';
+
+comment on column Zegarek.Numer_seryjny_zegarka is
+'Numer seryjny zegarka jest to numer jednoznacznie identyfikuj�cy zegarek od danego dostawcy. 
+Numery seryjne od r�nych dostawc�w mog� si� r�ni� formatem, mog� si� powt�rzy�. Maksymalna d�ugo�� to 12 znak�w.
+Wraz z kodem zegarka tworz� dwu-atrybutowy klucz g��wny jednoznacznie identyfikauj�cy zegarek w ca�ej sieci sklep�w.';
+
+comment on column Zegarek.Id_wydania is
+'Jednoznaczny identyfikator dokumentu wydania zewn�trznego.';
+
+comment on column Zegarek.Mag is
+'Mag jest to 
+identyfikator, kt�ry jednoznacznie definiuje dan� lokalizacj� - sklep lub magazyn.
+Magazyn g��wny jest to id 1.';
+
+comment on column Zegarek.Certyfikat_zegarka is
+'Certyfikat zegarka potwierdzaj�ce spe�nenie pewnych norm.
+COSC - Certyfikat chronometru potwierdzaj�cy, �e zegarek spe�nia surowe szwajcarskie normy precyzji.
+METAS - Certyfikat potwierdzaj�cy wy�sz� precyzj� ni� COSC oraz odporno�� na pola magnetyczne do 15 000 gauss�w.
+Geneva Seal -   Certyfikat pochodzenia i jako�ci, potwierdzaj�cy, �e zegarek zosta� wyprodukowany w kantonie Genewa oraz spe�nia najwy�sze standardy zegarmistrzowskie
+ISO 3159 - Mi�dzynarodowy standard precyzji mechanizm�w zegark�w
+ISO 6425 - Certyfikat potwierdzaj�cy, �e zegarek spe�nia normy dla zegark�w nurkowych.
+i inne';
+
+/*==============================================================*/
+/* Index: Model_zegarka_FK                                      */
+/*==============================================================*/
+create  index Model_zegarka_FK on Zegarek (
+Kod_zegarka
+);
+
+/*==============================================================*/
+/* Index: Lokalizacja_zegarka_FK                                */
+/*==============================================================*/
+create  index Lokalizacja_zegarka_FK on Zegarek (
+Mag
+);
+
+/*==============================================================*/
+/* Index: Skladowa_wydania_FK                                   */
+/*==============================================================*/
+create  index Skladowa_wydania_FK on Zegarek (
+Id_wydania
+);
+
+alter table Dokument_sprzedazy
+   add constraint FK_DOKUMENT_PARAGON_F_KONTRAHE foreign key (Id_kontrahenta)
+      references Kontrahent (Id_kontrahenta)
+      on delete restrict on update restrict;
+
+alter table Dokument_sprzedazy
+   add constraint FK_DOKUMENT_SKLADOWA__WYDANIE_ foreign key (Id_wydania)
+      references Wydanie_zewnetrzne (Id_wydania)
+      on delete restrict on update restrict;
+
+alter table Dokument_zakupu
+   add constraint FK_DOKUMENT_FAKTURA_KONTRAHE foreign key (Id_kontrahenta)
+      references Kontrahent (Id_kontrahenta)
+      on delete restrict on update restrict;
+
+alter table Lokalizacja
+   add constraint FK_LOKALIZA_WLASCICIE_OSOBA foreign key (Id_osoby)
+      references Osoba (Id_osoby)
+      on delete restrict on update restrict;
+
+alter table Osoba
+   add constraint "FK_OSOBA_OSOBA KON_KONTRAHE" foreign key (Id_kontrahenta)
+      references Kontrahent (Id_kontrahenta)
+      on delete restrict on update restrict;
+
+alter table Pozycja_przyjecia
+   add constraint FK_POZYCJA__POZYCJA_D_PRZYJECI foreign key (Id_przyjecia)
+      references Przyjecie_zewnetrzne (Id_przyjecia)
+      on delete restrict on update restrict;
+
+alter table Pozycja_przyjecia
+   add constraint FK_POZYCJA__PRZYJETY__MODEL_ZE foreign key (Kod_zegarka)
+      references Model_zegarka (Kod_zegarka)
+      on delete restrict on update restrict;
+
+alter table Pozycja_zamowienia
+   add constraint FK_POZYCJA__POZYCJA_Z_ZAMOWIEN foreign key (Id_zamowienia)
+      references Zamowienie (Id_zamowienia)
+      on delete restrict on update restrict;
+
+alter table Pozycja_zamowienia
+   add constraint FK_POZYCJA__REALIZOWA_MODEL_ZE foreign key (Kod_zegarka)
+      references Model_zegarka (Kod_zegarka)
+      on delete restrict on update restrict;
+
+alter table Pozycja_zamowienia
+   add constraint FK_POZYCJA__REALIZOWA_ZEGAREK foreign key (Zeg_Kod_zegarka, Numer_seryjny_zegarka)
+      references Zegarek (Kod_zegarka, Numer_seryjny_zegarka)
+      on delete restrict on update restrict;
+
+alter table Pracownik
+   add constraint FK_PRACOWNI_DANE_PRAC_OSOBA foreign key (Id_osoby)
+      references Osoba (Id_osoby)
+      on delete restrict on update restrict;
+
+alter table Pracownik
+   add constraint FK_PRACOWNI_MIEJSCE_P_LOKALIZA foreign key (Mag)
+      references Lokalizacja (Mag)
+      on delete restrict on update restrict;
+
+alter table Pracownik
+   add constraint FK_PRACOWNI_PRZELOZON_PRACOWNI foreign key (Pra_Id_pracownika)
+      references Pracownik (Id_pracownika)
+      on delete restrict on update restrict;
+
+alter table Promocja_modelu_zegarka
+   add constraint FK_PROMOCJA_PROMOCJA__MODEL_ZE foreign key (Kod_zegarka)
+      references Model_zegarka (Kod_zegarka)
+      on delete restrict on update restrict;
+
+alter table Promocja_modelu_zegarka
+   add constraint FK_PROMOCJA_PROMOCJA__PROMOCJA foreign key (Id_promocji)
+      references Promocja (Id_promocji)
+      on delete restrict on update restrict;
+
+alter table Przyjecie_zewnetrzne
+   add constraint FK_PRZYJECI_DOSTAWCA_KONTRAHE foreign key (Id_kontrahenta)
+      references Kontrahent (Id_kontrahenta)
+      on delete restrict on update restrict;
+
+alter table Przyjecie_zewnetrzne
+   add constraint FK_PRZYJECI_OSOBA_PRZ_PRACOWNI foreign key (Id_pracownika)
+      references Pracownik (Id_pracownika)
+      on delete restrict on update restrict;
+
+alter table Przyjecie_zewnetrzne
+   add constraint FK_PRZYJECI_SKLADOWA__DOKUMENT foreign key (Id_dokumentu_zakupu)
+      references Dokument_zakupu (Id_dokumentu_zakupu)
+      on delete restrict on update restrict;
+
+alter table Reklamacja
+   add constraint FK_REKLAMAC_REKLAMACJ_ZEGAREK foreign key (Kod_zegarka, Numer_seryjny_zegarka)
+      references Zegarek (Kod_zegarka, Numer_seryjny_zegarka)
+      on delete restrict on update restrict;
+
+alter table Wydanie_zewnetrzne
+   add constraint FK_WYDANIE__KLIENT_KONTRAHE foreign key (Id_kontrahenta)
+      references Kontrahent (Id_kontrahenta)
+      on delete restrict on update restrict;
+
+alter table Wydanie_zewnetrzne
+   add constraint FK_WYDANIE__OSOBA_WYD_PRACOWNI foreign key (Id_pracownika)
+      references Pracownik (Id_pracownika)
+      on delete restrict on update restrict;
+
+alter table Zamowienie
+   add constraint FK_ZAMOWIEN_ODBIOR_ZA_LOKALIZA foreign key (Mag)
+      references Lokalizacja (Mag)
+      on delete restrict on update restrict;
+
+alter table Zamowienie
+   add constraint FK_ZAMOWIEN_ODBIORCA__OSOBA foreign key (Id_osoby)
+      references Osoba (Id_osoby)
+      on delete restrict on update restrict;
+
+alter table Zegarek
+   add constraint FK_ZEGAREK_LOKALIZAC_LOKALIZA foreign key (Mag)
+      references Lokalizacja (Mag)
+      on delete restrict on update restrict;
+
+alter table Zegarek
+   add constraint FK_ZEGAREK_MODEL_ZEG_MODEL_ZE foreign key (Kod_zegarka)
+      references Model_zegarka (Kod_zegarka)
+      on delete restrict on update restrict;
+
+alter table Zegarek
+   add constraint FK_ZEGAREK_SKLADOWA__WYDANIE_ foreign key (Id_wydania)
+      references Wydanie_zewnetrzne (Id_wydania)
+      on delete restrict on update restrict;
+

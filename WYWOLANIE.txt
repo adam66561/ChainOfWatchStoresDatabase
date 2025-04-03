@@ -1,0 +1,43 @@
+Funkcja: f_premia_pracownika
+SELECT f_premia_pracownika(19, 01, 2025)
+
+Funkcja: f_ulubiony_zegarek
+SELECT f_ulubiony_zegarek(1, 2025)
+
+Funkcja: f_liczba_sprzedanych_zegarkow
+SELECT f_liczba_sprzedanych_zegarkow('OMSP0003', '2025-01-01', '2025-02-01')
+
+
+
+Procedura transakcja: p_dodaj_zamowienie
+call p_dodaj_zamowienie(19, 3, 'ROSU0001', 'SEPR0003', 'OMSP0004') - BRAK NA STANIE
+call p_dodaj_zamowienie(19, 3, 'ROSU0001', 'SEPR0003', 'GSCA0002') - PRZYJETO DO REALIZACJI
+NOWE POZYCJE W ZAMOWIENIE I POZYCJA ZAMOWIENIA
+
+
+Procedura: p_przyjmij_dostawe
+CALL p_przyjmij_dostawe(18, 19, 'wz1231', 'SWSK0005', 25, 'SEPR0003', 2)
+NOWY W PRZYJECIE, POZYCJA PRZYJECIA I TRIGGER DODAJE ILOSC W MODEL
+
+
+Procedura transakcja: p_wydaj_produkt_klientowi
+sklep 3 to np pracownk 21
+select * from v_oferta_sklep_3
+call p_wydaj_produkt_klientowi('P', null, 21, 3, 'Rolex', 'Submariner', 'SN00000338', 'Seiko', 'Presage', 'SN') - ZNIKA Z VIEW, ID WYDANIA POJAWIA SIE W ZEGAREK, -1 NA EWIDENCJI MODEL ZEGARKA,
+SELECT * FROM Zegarek WHERE Id_wydania IS NOT NULL
+SELECT * FROM Dokument_sprzedazy
+SELECT * FROM Wydanie_zewnetrzne
+
+Procedura transakcja: p_wprowadz_fakture_za_przyjecia
+CALL p_wprowadz_fakture_za_przyjecia(287312.00, 23, 'DOKFK123', 37, 39) - FAKTURA MUSI DOTYCZYC JEDNEGO KONTRAHENTA
+CALL p_wprowadz_fakture_za_przyjecia(287312.00, 23, 'DOKFK123', 32, 33) - GIT
+
+
+
+TRIGGER DLA ZAMOWIENIA
+update Pozycja_zamowienia
+set Zeg_Kod_zegarka='SWSK0005'
+WHERE Id_zamowienia=51 AND Id_pozycja_zamowienia=3; - NIE MOZE BYC NULL JEDNO
+update Pozycja_zamowienia
+set Zeg_Kod_zegarka='SWSK0005', Numer_seryjny_zegarka='SN00000233'
+WHERE Id_zamowienia=51 AND Id_pozycja_zamowienia=3; - ZEGAREK NIE JEST JUZ DOSTEPNY
